@@ -1,0 +1,396 @@
+/****************************************************************************
+ *
+ *  Fullscreen Gallery Plugin
+ *  -------------------------
+ *  Docs: https://github.com/whitewhale/LWGalleries
+ *  Author: @nroyall @whitewhale
+ *  Licensed under the MIT license
+
+ ****************************************************************************
+ */
+
+
+// CHANGE THE GALLERY STYLES BY ADJUSTING THESE VARIABLES:
+
+// Button settings
+@btn-size:                60px;
+@btn-arrowsize:           @btn-size / 4;
+
+// Button size on mobile
+@btn-size-small:          40px;
+@btn-arrowsize-small:     @btn-size-small / 4;
+
+// Button colors
+@btn-color:               #fff;
+@btn-bg:                  #000;
+@btn-border:              #fff;
+
+// Button hover colors
+@btn-hover-color:         #000;
+@btn-bg-hover:            #fff;
+@btn-hover-border-color:  #fff;
+
+// Loader icon colors
+@loader-color-1:           #426928;
+@loader-color-2:           #0a51a7;
+@loader-color-3:           #fba850;
+@loader-color-4:           #02427b;
+
+
+// Prevent scrolling when fullscreen gallery is open
+body.fsgallery-open {
+  overflow: hidden;
+}
+
+// Fullscreen gallery container
+.fsgallery {
+  pointer-events: none; // prevent mouse events
+  z-index: -9999; // place gallery behind everything
+  overflow: scroll;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  background-color: #000;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+
+  &.fsgallery-open {
+    pointer-events: all; // enable mouse events on gallery
+    z-index: 9999; // place gallery above everything
+    opacity: 1;
+  }
+}
+
+.fsgallery-inner {
+  opacity: 0;
+  -webkit-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+
+  // Reveal once first image has loaded
+  &.is-visible {
+    pointer-events: all; // enable mouse events
+    z-index: 3;
+    opacity: 1;
+  }
+}
+
+// Title
+.fsgallery-title {
+  display: block;
+  padding: 55px 0 25px;
+  color: #fff;
+  font-size: 2.6rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media only screen and (max-width: 800px) {
+    padding-top: 60px; // make room for close button
+  }
+
+  // hide title on small mobile landscape orientation
+  @media only screen and (max-height:650px) {
+    display: none;
+  }
+}
+
+// Single image container
+.fsgallery-image {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%); // translate3d causes blurry text
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  margin: 0 auto;
+  padding-top: 20px;
+  padding-bottom: 40px;
+  width: 100%;
+  height: auto;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  -webkit-transition: opacity 0.6s ease; /* transform for image fade out*/
+  transition: opacity 0.6s ease;
+
+  // small mobile landscape orientation
+  @media only screen and (max-height:650px) {
+    padding-bottom: 0;
+  }
+
+  // Gallery image
+  img {
+    display: inline-block;
+    margin: 0 auto;
+    max-width: 75%;
+    max-height: 500px;
+    width: auto;
+    height: auto;
+    border: 3px solid #fff;
+    box-shadow: none;
+
+
+    @media only screen and (max-width: 800px) {
+      max-width: 60%;
+    }
+
+    @media only screen and (max-height:900px) {
+      max-height: 450px;
+    }
+
+    // small mobile landscape orientation
+    @media only screen and (max-height:650px) {
+      max-height: 100%;
+    }
+  }
+
+  // Selected image
+  &.fsgallery-selected {
+    display: block;
+    pointer-events: all;
+    opacity: 1;
+    -webkit-transition: opacity 0.4s ease-in-out; /* transform for image fade in*/
+    -o-transition: opacity 0.4s ease-in-out;
+    transition: opacity 0.4s ease-in-out;
+
+    img {
+      -webkit-transition: -webkit-transform 0.3s ease; // tranform for image shrink when gallery is closed
+      transition: -webkit-transform 0.3s ease;
+      -o-transition: -o-transform 0.3s ease;
+      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, -webkit-transform 0.3s ease, -o-transform 0.3s ease;
+    }
+
+    &.is-closed img { // shrink current image when overlay is closed
+      -webkit-transform: scale(0);
+      -ms-transform: scale(0);
+      transform: scale(0);
+    }
+  }
+}
+
+// Image caption
+.fsgallery-caption {
+  display: block;
+  max-width: 75%;
+  margin: 0 auto;
+  padding-top: 15px;
+  color: #fff;
+  font-size: 1.6rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  a {
+    color: #fff;
+    text-decoration: underline;
+
+    &:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+
+  @media only screen and (max-width: 800px) {
+    max-width: 65%;
+  }
+}
+
+
+// Nav arrows
+.fsgallery-nav a {
+  z-index: 4; // above images
+  position: absolute;
+  display: block;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  line-height: @btn-size;
+  height: @btn-size;
+  width: @btn-size;
+  border-radius: @btn-size;
+  border: 2px solid @btn-border;
+  background-color: @btn-bg;
+  color: @btn-color;
+  cursor: pointer;
+  text-indent: -9999px;
+  outline: none;
+  transition: all .25s ease-in-out;
+
+  @media only screen and (max-width: 600px) {
+    line-height: @btn-size-small;
+    height: @btn-size-small;
+    width: @btn-size-small;
+    border-radius: @btn-size-small;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &.is-active,
+  &:hover,
+  &:focus {
+    background-color: @btn-bg-hover;
+    border-color: @btn-hover-border-color;
+    color: @btn-hover-color;
+  }
+
+  &:after {
+    position: absolute;
+    display: inline-block;
+    content: "";
+    width: @btn-arrowsize;
+    height: @btn-arrowsize;
+    top: 50%;
+    left: 50%;
+    margin-top: -(@btn-arrowsize * .5);
+    -webkit-transform: rotateZ(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotateZ(-45deg);
+
+    @media only screen and (max-width: 600px) {
+      width: @btn-arrowsize-small;
+      height: @btn-arrowsize-small;
+      margin-top: -(@btn-arrowsize-small * .5);
+    }
+  }
+
+  &.prev {
+    left: 20px;
+
+    &:after {
+      margin-left: -(@btn-arrowsize * .25);
+      border-top: 2px solid;
+      border-left: 2px solid;
+
+      @media only screen and (max-width: 600px) {
+        margin-left: -(@btn-arrowsize-small * .25);
+      }
+    }
+  }
+
+  &.next {
+    right: 20px;
+
+    &:after {
+      margin-left: -(@btn-arrowsize * .75);
+      border-bottom: 2px solid;
+      border-right: 2px solid;
+
+      @media only screen and (max-width: 600px) {
+        margin-left: -(@btn-arrowsize-small * .75);
+      }
+    }
+  }
+}
+
+// Close button
+.fsgallery-close {
+  cursor: pointer; // mobile Safari does not generate click events without this
+  z-index: 5; // above nav arrows
+  display: block;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 25px;
+  height: 25px;
+  overflow: hidden;
+
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    margin-top: -1.5px;
+    height: 3px;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    background-color: #b4b4b4;
+    transition: all .25s ease-in-out;
+  }
+
+  &:before {
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+  &:after {
+    -webkit-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+  }
+
+  &:hover {
+    &:before, &:after {
+      background-color: #fff;
+    }
+  }
+
+  @media only screen and (max-width: 800px) {
+    top: 22px;
+    right: 22px;
+  }
+}
+
+
+// Loading icon
+// Copyright (c) 2017 by Kevin (http://codepen.io/I-is-kevin/pen/jqejXj)
+.fsgallery-loader {
+  position: absolute;
+  top: 50%;
+  left: 48%;
+  opacity: 0;
+
+  &.is-visible { // only display loaded while image is loading
+    opacity: 1;
+  }
+}
+
+.fsgallery-loader-line {
+  animation: expand 1s ease-in-out infinite;
+  border-radius: 10px;
+  display: inline-block;
+  -webkit-transform-origin: center center;
+  -ms-transform-origin: center center;
+          transform-origin: center center;
+  margin: 0 3px;
+  width: 3px;
+  height: 25px;
+}
+
+.fsgallery-loader-line:nth-child(1) {
+  background: @loader-color-1;
+}
+
+.fsgallery-loader-line:nth-child(2) {
+  animation-delay: 180ms;
+  background: @loader-color-2;
+}
+
+.fsgallery-loader-line:nth-child(3) {
+  animation-delay: 360ms;
+  background: @loader-color-3;
+}
+
+.fsgallery-loader-line:nth-child(4) {
+  animation-delay: 540ms;
+  background: @loader-color-4;
+}
+
+// Loading animation
+@keyframes expand {
+  0% {
+    -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+            transform: scale(1);
+  }
+  25% {
+    -webkit-transform: scale(2);
+        -ms-transform: scale(2);
+            transform: scale(2);
+  }
+}
