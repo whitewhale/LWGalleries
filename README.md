@@ -36,8 +36,6 @@ Go to the fullscreen gallery to change the fullscreen settings.
 Carousel gallery displays a slideshow of images that opens fullscreen when clicked.
 These gallery styles and scripts are only loaded when there's a gallery on the page.
 
-Go to the fullscreen gallery to change the fullscreen settings.
-
 
 #### Carousel Options
 Add these classes to the gallery widget to change the appearance.
@@ -67,6 +65,8 @@ _Scrolls through the carousel images automatically. This will hide the image cap
 
     <arg id="class">no-title</arg>
 
+<br/>
+Go to the fullscreen gallery to change the fullscreen settings.
 
 ### Acknowledgements
 This gallery uses BoxSlider to display images
