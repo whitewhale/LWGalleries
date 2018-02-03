@@ -13,22 +13,29 @@
  */
 ;(function($) {
 
-  var $body = $('body');
+  var initMiniGalleries = function() {
 
-  // Load the fullscreen gallery plugin once and cache it
-  $.ajax({
-    url: '/live/resource/css/_ingredients/themes/global/galleries/fullscreen/fullscreen.js',
-    dataType: 'script',
-    cache: true
-  }).done(function(){
+    // Load the fullscreen gallery plugin once and cache it
+    $.ajax({
+      url: '/live/resource/css/_ingredients/themes/global/galleries/fullscreen/fullscreen.js',
+      dataType: 'script',
+      cache: true
+    }).done(function(){
 
-    // If the plugin load is successful, load the fullscreen gallery stylesheet
-    $('head').append('<link rel="stylesheet" href="/_ingredients/extras/fullscreen-gallery.min.css" type="text/css" />');
+      // If the plugin load is successful, load the fullscreen gallery stylesheet
+      $('head').append('<link rel="stylesheet" href="/live/resource/css/_ingredients/themes/global/galleries/fullscreen/fullscreen.css" type="text/css" />');
 
-    // Then create a fullscreen gallery for each mini gallery on the page
-    var initGalleries = function() {
-      $('.lw_gallery_mini').each(function() { // loop through each gallery so we can find the title for each one
+      // For each mini gallery on the page
+      $('.lw_gallery_mini').each(function() {
         var $this = $(this);
+
+        // Set title width and reveal title
+        $this.find('.gallery-info').css({
+          'max-width': ($this.find('.gallery-images').outerWidth()*.95),
+          'opacity': '1'
+        });
+
+        // Create a fullscreen gallery
         $this.find('.gallery-images').fsgallery({
           title: $this.find('.gallery-title'),       // a text string or jQuery selector containing the gallery title
           caption: $('.caption'),         // a jQuery selector containing each image caption (must be inside list element)
@@ -38,20 +45,15 @@
           trigger: $this.find('.gallery-info'),     // a jQuery selector for an element that opens the gallery when clicked. By default, the gallery opens when the image container is clicked.
         });
       });
-    };
-
-    // Initialize fullscreen galleries on DOM ready
-    initGalleries();
-
-    // And after LiveWhale page edit/save
-    $body.bind('stopEdit.lw', function(){
-      initGalleries();
     });
+  };
 
-    // And after widget pagination
-    $body.bind('paginate.lw', function(){
-      initGalleries();
-    });
+  // Initialize galleries on DOM ready
+  initMiniGalleries();
+
+  // Run after LiveWhale page edit/save
+  $('body').bind('stopEdit.lw', function(){
+    initMiniGalleries();
   });
 
 })(livewhale.jQuery);

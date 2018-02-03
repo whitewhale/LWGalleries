@@ -2,7 +2,7 @@
 A collection of galleries to use with LiveWhale CMS.
 
 ## Installation
-Add the galleries folder to your theme:
+Add the galleries folder to your **global** theme:
 
     /www/_ingredients/themes/global/galleries/
 
