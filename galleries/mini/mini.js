@@ -29,12 +29,6 @@
       $('.lw_gallery_mini').each(function() {
         var $this = $(this);
 
-        // Set title width and reveal title
-        $this.find('.gallery-info').css({
-          'max-width': ($this.find('.gallery-images').outerWidth()*.95),
-          'opacity': '1'
-        });
-
         // Create a fullscreen gallery
         $this.find('.gallery-images').fsgallery({
           title: $this.find('.gallery-title'),       // a text string or jQuery selector containing the gallery title

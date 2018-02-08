@@ -16,14 +16,16 @@
 
 
 .lw_gallery_mini {
+  position: relative; // contains gallery-info
   display: inline-block;
   margin-bottom: 25px;
 
   .gallery-info {
     z-index: 1; // above photos
-    position: relative;
-    cursor: pointer;
-    margin: -8.5% 15px 0 15px; // top offset relative to width of gallery
+    position: absolute; // make it absolute so we can cap the width, without JS
+    left: 0;
+    right: 0;
+    margin: -8.5% 10px 0 15px; // top offset relative to width of gallery
     padding: 11px 8px 10px 52px;
     font-family: @title-font;
     line-height: 1.15;
@@ -31,11 +33,7 @@
     -webkit-box-shadow: 0px 0px 5px -1px rgba(0, 0, 0, 0.8);
     box-shadow: 0px 0px 5px -1px rgba(0, 0, 0, 0.8);
     color: #fff;
-    max-width: 0;
-    opacity: 0; // set size and reveal with JS
-    -webkit-transition: opacity .15s ease-in-out;
-    -o-transition: opacity .15s ease-in-out;
-    transition: opacity .15s ease-in-out;
+    cursor: pointer;
   }
 
   .gallery-info::before { // picture icon
