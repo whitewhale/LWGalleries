@@ -85,6 +85,7 @@
             prevText: '',
             ticker: autoplay,
             speed: speed,
+            touchEnabled: false, // prevent touch swipe since clicking/dragging/swiping opens gallery fullscreen
             onSliderLoad: function(){
 
               // Set gallery height
@@ -127,7 +128,7 @@
           width: 1000,        // a number denoting the image width. If no width is specified, the original image width will be used.
           autoplay: false,         // number of seconds to wait between images, or set to true for default speed (3s). Autoplay will stop when nav buttons are clicked.
           pauseOnHover: true,  // pause autoplay when an image is hovered
-          trigger: $this.find('.bx-wrapper'),     // a jQuery selector for an element that opens the gallery when clicked. By default, the gallery opens when the image container is clicked.
+          trigger: $this.find('.lw_image'),     // a jQuery selector for an element that opens the gallery when clicked. By default, the gallery opens when the image container is clicked.
         });
       });
     });

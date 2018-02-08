@@ -19,6 +19,7 @@
   position: relative; // contains gallery-info
   display: inline-block;
   margin-bottom: 25px;
+  max-width: 100%; // IE11 bugfix
 
   .gallery-info {
     z-index: 1; // above photos
@@ -78,6 +79,7 @@
       display: inline-block;
       position: relative; // contains pseudo element
       margin-top: 2%;
+      max-width: 100%; // IE11 bugfix
 
       img { // first gallery image is tilted
         z-index: 1; // above pseudo element
