@@ -19,6 +19,12 @@ Set the gallery image size about the width of your page sidebar:
 
     $_LW->REGISTERED_WIDGETS['galleries']['custom']['inline_width']=420; // default width of inline gallery images (default: 300)
 
+
+If you prefer to open **all** galleries fullscreen, instead of showing a gallery details page, add the gallery-links script to your theme:
+
+    /www/_ingredients/themes/global/scripts/gallery-links.js
+
+
 <br/><br/>
 ---
 
