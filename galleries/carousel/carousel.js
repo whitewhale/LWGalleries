@@ -73,10 +73,10 @@
               firstImageWidth = (firstImage.width()/firstImage.height())*galleryHeight;
 
 
-          // Show one image at a time
+          // Create the slider
           var $slider = $gallery.find('.bxslider').bxSlider({
             minSlides: 1,
-            maxSlides: 5,
+            maxSlides: 5, // number of images to show at a time
             moveSlides: 1,
             slideWidth: firstImageWidth,
             adaptiveHeight: false,
