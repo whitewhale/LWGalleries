@@ -27,6 +27,12 @@ If you wish to avoid this and **always** show galleries in a fullscreen overlay,
     /www/_ingredients/themes/global/scripts/gallery-links.js
 
 
+Lastly, to prevent the default LiveWhale gallery types appearing in LiveWhale, add the following files to your ingredients folder:
+
+    /www/_ingredients/themes/global/styles/livewhale.less
+    /www/_ingredients/backend/backend.less
+
+
 <br/><br/>
 ---
 
