@@ -7,3 +7,13 @@
     display: none;
   }
 }
+
+
+// Hide gallery preview because it opens on the details page, which is not used
+#galleries.manager #manager .item_preview {
+
+  > a:first-child, // hide the preview button on the gallery manager, but keep the Get Code button
+  > br:first-of-type {
+    display: none;
+  }
+}
