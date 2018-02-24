@@ -19,7 +19,6 @@ Set the gallery image size about the width of your page sidebar:
 
     $_LW->REGISTERED_WIDGETS['galleries']['custom']['inline_width']=420; // default width of inline gallery images (default: 300)
 
-
 Clicking a link to a gallery details page opens the gallery on a separate page (which needs styling).
 
 If you wish to avoid this and **always** show galleries in a fullscreen overlay, add this script to your theme:
@@ -35,8 +34,16 @@ Lastly, to prevent the default LiveWhale gallery types appearing in LiveWhale, a
 
 <br/><br/>
 ---
+## Custom Styling
+Customize the gallery styles by changing the LESS variables in:
 
-## Mini Gallery
+    /www/_ingredients/themes/global/galleries/all-custom-gallery-variables.less
+
+<br/><br/>
+---
+
+## Gallery Types: 
+### Mini Gallery
 Mini gallery displays the first image in the gallery and opens the gallery fullscreen when clicked.
 These gallery styles and scripts are only loaded when there's a gallery on the page.
 
@@ -45,7 +52,7 @@ Go to the fullscreen gallery to change the fullscreen settings.
 <br/><br/>
 ---
 
-## Carousel Gallery
+### Carousel Gallery
 
 Carousel gallery displays a slideshow of images that opens fullscreen when clicked.
 These gallery styles and scripts are only loaded when there's a gallery on the page.
@@ -93,7 +100,7 @@ http://bxslider.com/examples/carousel-dynamic-number-slides
 <br/><br/>
 ---
 
-## Fullscreen Gallery
+### Fullscreen Gallery
 A responsive and accessible fullscreen gallery plugin.
 
 The plugin cannot be used as an inline gallery by itself but it can be called on an inline gallery. The plugin styles and scripts must be loaded before calling the plugin.
