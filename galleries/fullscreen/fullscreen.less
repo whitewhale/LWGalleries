@@ -9,32 +9,7 @@
  ****************************************************************************
  */
 
-
-// CHANGE THE GALLERY STYLES BY ADJUSTING THESE VARIABLES:
-
-// Button settings
-@btn-size:                60px;
-@btn-arrowsize:           @btn-size / 4;
-
-// Button size on mobile
-@btn-size-small:          40px;
-@btn-arrowsize-small:     @btn-size-small / 4;
-
-// Button colors
-@btn-color:               #fff;
-@btn-bg:                  #000;
-@btn-border:              #fff;
-
-// Button hover colors
-@btn-hover-color:         #000;
-@btn-bg-hover:            #fff;
-@btn-hover-border-color:  #fff;
-
-// Loader icon colors
-@loader-color-1:           #426928;
-@loader-color-2:           #0a51a7;
-@loader-color-3:           #fba850;
-@loader-color-4:           #02427b;
+@import "../all-custom-gallery-variables.less";   // Import custom gallery variables
 
 
 // Prevent scrolling when fullscreen gallery is open
@@ -53,7 +28,7 @@ body.fsgallery-open {
   bottom: 0;
   left: 0;
   text-align: center;
-  background-color: #000;
+  background-color: @fullscreen-background-color;
   opacity: 0;
   -webkit-transition: opacity 0.3s ease;
   transition: opacity 0.3s ease;
@@ -82,8 +57,10 @@ body.fsgallery-open {
 .fsgallery-title {
   display: block;
   padding: 55px 0 25px;
-  color: #fff;
-  font-size: 2.6rem;
+  color: @fullscreen-title-color;
+  font-size: @fullscreen-title-font-size;
+  font-family: @fullscreen-title-font;
+  font-weight: @fullscreen-title-font-weight;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -178,8 +155,10 @@ body.fsgallery-open {
   max-width: 75%;
   margin: 0 auto;
   padding-top: 15px;
-  color: #fff;
-  font-size: 1.6rem;
+  color: @fullscreen-caption-color;
+  font-family: @fullscreen-caption-font;
+  font-size: @fullscreen-caption-font-size;
+  font-weight: @fullscreen-caption-font-weight;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -208,23 +187,23 @@ body.fsgallery-open {
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
-  line-height: @btn-size;
-  height: @btn-size;
-  width: @btn-size;
-  border-radius: @btn-size;
-  border: 2px solid @btn-border;
-  background-color: @btn-bg;
-  color: @btn-color;
+  line-height: @fullscreen-btn-size;
+  height: @fullscreen-btn-size;
+  width: @fullscreen-btn-size;
+  border-radius: @fullscreen-btn-size;
+  border: 2px solid @fullscreen-btn-border;
+  background-color: @fullscreen-btn-bg;
+  color: @fullscreen-btn-color;
   cursor: pointer;
   text-indent: -9999px;
   outline: none;
   transition: all .25s ease-in-out;
 
   @media only screen and (max-width: 600px) {
-    line-height: @btn-size-small;
-    height: @btn-size-small;
-    width: @btn-size-small;
-    border-radius: @btn-size-small;
+    line-height: @fullscreen-btn-size-small;
+    height: @fullscreen-btn-size-small;
+    width: @fullscreen-btn-size-small;
+    border-radius: @fullscreen-btn-size-small;
   }
 
   &:focus {
@@ -234,28 +213,28 @@ body.fsgallery-open {
   &.is-active,
   &:hover,
   &:focus {
-    background-color: @btn-bg-hover;
-    border-color: @btn-hover-border-color;
-    color: @btn-hover-color;
+    background-color: @fullscreen-btn-bg-hover;
+    border-color: @fullscreen-btn-hover-border-color;
+    color: @fullscreen-btn-hover-color;
   }
 
   &:after {
     position: absolute;
     display: inline-block;
     content: "";
-    width: @btn-arrowsize;
-    height: @btn-arrowsize;
+    width: @fullscreen-btn-arrowsize;
+    height: @fullscreen-btn-arrowsize;
     top: 50%;
     left: 50%;
-    margin-top: -(@btn-arrowsize * .5);
+    margin-top: -(@fullscreen-btn-arrowsize * .5);
     -webkit-transform: rotateZ(-45deg);
     -ms-transform: rotate(-45deg);
     transform: rotateZ(-45deg);
 
     @media only screen and (max-width: 600px) {
-      width: @btn-arrowsize-small;
-      height: @btn-arrowsize-small;
-      margin-top: -(@btn-arrowsize-small * .5);
+      width: @fullscreen-btn-arrowsize-small;
+      height: @fullscreen-btn-arrowsize-small;
+      margin-top: -(@fullscreen-btn-arrowsize-small * .5);
     }
   }
 
@@ -263,12 +242,12 @@ body.fsgallery-open {
     left: 20px;
 
     &:after {
-      margin-left: -(@btn-arrowsize * .25);
+      margin-left: -(@fullscreen-btn-arrowsize * .25);
       border-top: 2px solid;
       border-left: 2px solid;
 
       @media only screen and (max-width: 600px) {
-        margin-left: -(@btn-arrowsize-small * .25);
+        margin-left: -(@fullscreen-btn-arrowsize-small * .25);
       }
     }
   }
@@ -277,12 +256,12 @@ body.fsgallery-open {
     right: 20px;
 
     &:after {
-      margin-left: -(@btn-arrowsize * .75);
+      margin-left: -(@fullscreen-btn-arrowsize * .75);
       border-bottom: 2px solid;
       border-right: 2px solid;
 
       @media only screen and (max-width: 600px) {
-        margin-left: -(@btn-arrowsize-small * .75);
+        margin-left: -(@fullscreen-btn-arrowsize-small * .75);
       }
     }
   }
@@ -363,22 +342,22 @@ body.fsgallery-open {
 }
 
 .fsgallery-loader-line:nth-child(1) {
-  background: @loader-color-1;
+  background: @fullscreen-loader-color-1;
 }
 
 .fsgallery-loader-line:nth-child(2) {
   animation-delay: 180ms;
-  background: @loader-color-2;
+  background: @fullscreen-loader-color-2;
 }
 
 .fsgallery-loader-line:nth-child(3) {
   animation-delay: 360ms;
-  background: @loader-color-3;
+  background: @fullscreen-loader-color-3;
 }
 
 .fsgallery-loader-line:nth-child(4) {
   animation-delay: 540ms;
-  background: @loader-color-4;
+  background: @fullscreen-loader-color-4;
 }
 
 // Loading animation

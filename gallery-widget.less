@@ -1,0 +1,49 @@
+// Styling for LiveWhale galleries widgets (not inline gallery widgets)
+
+@title-font: 'adelle', serif;
+@caption-font: goudy-old-style,serif;
+
+.lw_widget_type_galleries {
+  margin-top: 35px;
+  margin-bottom: 25px;
+
+  .lw_widget_results_galleries {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      &:not(:first-child) {
+        margin-top: 35px;
+      }
+    }
+
+    .lw_galleries_image a {
+
+      .lw_image {
+        margin-bottom: 6px;
+        border: 6px solid #fff;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+      }
+
+      &:hover,
+      &:focus {
+        .lw_image {
+          -webkit-filter: brightness(1.1);
+          filter: brightness(1.1);
+        }
+      }
+    }
+
+    .lw_galleries_title {
+      font-weight: bold;
+      font-size: 1.8rem;
+      font-family: @title-font;
+    }
+
+    .lw_galleries_description {
+      font-size: 1.7rem;
+      font-family: @caption-font;
+    }
+  }
+}

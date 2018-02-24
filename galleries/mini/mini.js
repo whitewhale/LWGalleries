@@ -32,7 +32,7 @@
         // Create a fullscreen gallery
         $this.find('.gallery-images').fsgallery({
           title: $this.find('.gallery-title'),       // a text string or jQuery selector containing the gallery title
-          caption: $('.caption'),         // a jQuery selector containing each image caption (must be inside list element)
+          caption: $this.find('.caption'),         // a jQuery selector containing each image caption (must be inside list element)
           width: 1000,         // a number denoting the image width. If no width is specified, the original image width will be used.
           autoplay: false,         // number of seconds to wait between images, or set to true for default speed (3s). Autoplay will stop when nav buttons are clicked.
           pauseOnHover: true,  // pause autoplay when an image is hovered
