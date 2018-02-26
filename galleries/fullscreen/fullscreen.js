@@ -153,7 +153,8 @@
       // Detect keypress when fullscreen gallery is open
       $body.keydown(function(e) {
 
-        if (  $body.hasClass('fsgallery-open') ) {
+        // If this gallery is open
+        if ( $('#gid-'+self.id).hasClass('fsgallery-open') && $body.hasClass('fsgallery-open') ) {
           var keyCode = e.which;
           var $thisGallery = $('#gid-'+self.id);
           var $prevArrow = $thisGallery.find('.fsgallery-nav').find('.prev');
@@ -199,7 +200,7 @@
 
           // If escape key is pressed, close gallery
           else if(keyCode == 27) { // escape
-            self._close(self.id);
+            self._close();
           }
         }
       });
@@ -307,7 +308,7 @@
       $('body').removeClass('fsgallery-open');
 
       // Move focus back to the small gallery
-      $(self.element).focus()
+      $(self.element).focus();
 
       var $fsgallery = $('#gid-'+self.id).removeClass('fsgallery-open').attr('tabindex','-1');
 
