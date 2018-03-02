@@ -15,7 +15,7 @@ Open the public config file:
     /livewhale/client/public.config.php
 
 Find the following line and unncomment it.
-Set the gallery image size about the width of your page sidebar:
+Set the gallery image size about the width of the space you want to fill: this could be the width of your main content area if you're only showing one large image at a time, or your page sidebar:
 
     $_LW->REGISTERED_WIDGETS['galleries']['custom']['inline_width']=420; // default width of inline gallery images (default: 300)
 
