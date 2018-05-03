@@ -89,7 +89,7 @@ _Scrolls through the carousel images automatically. This will hide the image cap
 <br/>
 Go to the fullscreen gallery to change the fullscreen settings.
 
-### Acknowledgements
+#### Acknowledgements
 This gallery uses BoxSlider to display images
 Source: BxSlider v4.1.2
 Written by: Steven Wanderski, 2014
