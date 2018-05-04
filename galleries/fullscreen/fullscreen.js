@@ -16,7 +16,8 @@
     // Default options
     options: {
       title: false,           // a text string or jQuery selector containing the gallery title
-      caption: false,         // a jQuery selector containing each image caption (must be inside list element)
+      caption: false,         // a jQuery selector containing each image caption
+      imageContainer: 'li',    // the element or element class containing each image and image caption (defaults to list element)
       width: false,           // a number denoting the image width. If no width is specified, the original image width will be used.
       autoplay: false,        // number of seconds to wait between images, or set to true for default speed (3s). Autoplay will stop when nav buttons are clicked.
       pauseOnHover: false,    // pause autoplay when an image is hovered
@@ -51,13 +52,22 @@
         // If a width is set, create the source for the large version of the image
         if ( width ) {
           var imageWidth = ( width > $image.data('maxW') ) ? $image.data('maxW') : width; // constrain to the the max image width
-          var srcBefore = $image.attr('src').substr(0, $image.attr('src').indexOf('width/')+6);
+          var src = $image.attr('src');
+          var srcBefore = '';
           var srcAfter = $image.attr('src').substr($image.attr('src').lastIndexOf('/'));
-          imageSrc = srcBefore+imageWidth+srcAfter; // redefine the image source
+
+          if ( ~src.indexOf('width') ) {
+            srcBefore = $image.attr('src').substr(0, $image.attr('src').indexOf('width/'));
+          }
+          else if ( ~src.indexOf('height') ) {
+            srcBefore = $image.attr('src').substr(0, $image.attr('src').indexOf('height/'));
+          }
+
+          imageSrc = srcBefore+'width/'+imageWidth+srcAfter; // redefine the image source
         }
 
-        // Get this image caption if there is one (requires the plugin to be called on a list of images)
-        var caption = ( self.options.caption && typeof self.options.caption === 'object' ) ? $image.closest('li').find(self.options.caption).text() : '';
+        // Get this image caption if there is one (requires each image and caption to be wrapped in a containing element)
+        var caption = ( self.options.caption && typeof self.options.caption === 'object' ) ? $image.closest(self.options.imageContainer).find(self.options.caption).text() : '';
         var imageCaption = caption.length > 0 ? '<div class="fsgallery-caption">'+caption+'</div>' : '';
 
         var imageAlt = ( $image.attr('alt') ) ?  $image.attr('alt') : '';
@@ -93,7 +103,7 @@
 
       // Open fullscreen gallery when the image container is clicked. The clicked image displays first.
       $(self.element).on('click', function(e){
-        var $clickedImage = $($(e.target).closest('li')).find('img'); // requires the plugin to be called on a list of images (as oppose to any container element)
+        var $clickedImage = $($(e.target).closest(self.options.imageContainer)).find('img'); // requires each image and caption to be wrapped in a containing element
         self._open( $clickedImage );
       });
 
@@ -104,14 +114,14 @@
           var keyCode = e.which;
           // If pressing space bar or return
           if( keyCode == 13 || keyCode == 32 ) {
-            var $clickedImage = $($(e.target).find('li')).find('img').get(0);
+            var $clickedImage = $($(e.target).find(self.options.imageContainer)).find('img').get(0); // requires each image and caption to be wrapped in a containing element
             self._open( $clickedImage );
           }
         }
       });
 
       $(self.element).on('click', function(e){
-        var $clickedImage = $($(e.target).closest('li')).find('img'); // requires the plugin to be called on a list of images (as oppose to any container element)
+        var $clickedImage = $($(e.target).closest(self.options.imageContainer)).find('img'); // requires each image and caption to be wrapped in a containing element
         self._open( $clickedImage );
       });
 
