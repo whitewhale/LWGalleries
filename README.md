@@ -126,7 +126,7 @@ You can call the plugin on an inline gallery that contains a list of images. Use
       }).done(function(){
 
         // If the plugin load is successful, load the fullscreen gallery stylesheet
-        $('head').append('<link rel="stylesheet" href="/_ingredients/extras/fullscreen-gallery.min.css" type="text/css" />');
+        $('head').append('<link rel="stylesheet" href="/live/resource/css/_ingredients/themes/global/galleries/fullscreen/fullscreen.css" type="text/css" />');
 
         // Then create a fullscreen gallery for each mini gallery on the page
         var initGalleries = function() {
