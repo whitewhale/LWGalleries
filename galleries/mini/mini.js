@@ -17,13 +17,13 @@
 
     // Load the fullscreen gallery plugin once and cache it
     $.ajax({
-      url: '/live/resource/css/_ingredients/themes/global/galleries/fullscreen/fullscreen.js',
+      url: '/live/resource/js/livewhale/theme/global/galleries/fullscreen/fullscreen.js',
       dataType: 'script',
       cache: true
     }).done(function(){
 
       // If the plugin load is successful, load the fullscreen gallery stylesheet
-      $('head').append('<link rel="stylesheet" href="/live/resource/css/_ingredients/themes/global/galleries/fullscreen/fullscreen.css" type="text/css" />');
+      $('head').append('<link rel="stylesheet" href="/live/resource/css/livewhale/theme/global/galleries/fullscreen/fullscreen.css" type="text/css" />');
 
       // For each mini gallery on the page
       $('.lw_gallery_mini').each(function() {
