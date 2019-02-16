@@ -111,13 +111,13 @@
 
     // Then load the fullscreen gallery plugin once and cache it
     $.ajax({
-      url: '/live/resource/css/_ingredients/themes/global/galleries/fullscreen/fullscreen.js',
+      url: '/live/resource/js/livewhale/theme/global/galleries/fullscreen/fullscreen.js',
       dataType: 'script',
       cache: true
     }).done(function(){
 
       // If the plugin load is successful, load the fullscreen gallery stylesheet
-      $('head').append('<link rel="stylesheet" href="/live/resource/css/_ingredients/themes/global/galleries/fullscreen/fullscreen.css" type="text/css" />');
+      $('head').append('<link rel="stylesheet" href="/live/resource/css/livewhale/theme/global/galleries/fullscreen/fullscreen.css" type="text/css" />');
 
       // Then create a fullscreen gallery for each carousel gallery on the page
       $('.lw_gallery_carousel').each(function() {
