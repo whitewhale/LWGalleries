@@ -78,7 +78,7 @@
       });
 
       // Create fullscreen gallery container for this gallery
-      var $fsgallery = $('<div id="gid-'+self.id+'" class="fsgallery" tabindex="-1"><span class="fsgallery-close" tabindex="0 role="button" title="close"></span><div class="fsgallery-nav"><a href="#" class="prev" title="previous image">Prev »</a><a href="#" class="next" title="next image">Next »</a></div><div class="fsgallery-loader is-visible"><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div></div></div>').append($fsgalleryList);
+      var $fsgallery = $('<div id="gid-'+self.id+'" class="fsgallery" tabindex="-1" style="opacity:0; z-index: -9999; pointer-events:none;"><span class="fsgallery-close" tabindex="0 role="button" title="close"></span><div class="fsgallery-nav"><a href="#" class="prev" title="previous image">Prev »</a><a href="#" class="next" title="next image">Next »</a></div><div class="fsgallery-loader is-visible"><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div></div></div>').append($fsgalleryList);
 
       // Add fullscreen gallery to the page
       $fsgallery.appendTo($body);
