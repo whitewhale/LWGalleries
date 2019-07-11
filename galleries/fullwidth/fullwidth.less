@@ -1,0 +1,307 @@
+/**********************************************
+ *
+ *  Full-Width Gallery
+ *  --------------------
+ *  On desktop, images are shown in a staggered three-column grid
+ *  On mobile, images appear in two sliding rows
+ *  The sliders are generated using Swiper
+ *  Mobile sliders are hidden on desktop with CSS
+ *
+  **********************************************
+ */
+
+
+
+//----------------------------
+//  Screen Breakpoints
+//----------------------------
+@screen-sm:  ~"only screen and (max-width: 991px)";
+@screen-lg:  ~"only screen and (min-width: 992px)";
+
+
+
+//-------------------------------------
+//  General Styles: Desktop and Mobile
+//-------------------------------------
+.lw_gallery_fullwidth li {
+  list-style: none;
+}
+
+.lw_gallery_fullwidth figure {
+  margin: 0;
+}
+
+
+.lw_gallery_fullwidth_title {
+  display: none;
+}
+
+
+//----------------------------
+//  Desktop Grid
+//----------------------------
+
+.lw_gallery_fullwidth .lw_gallery_fullwidth_grid {
+
+  @media @screen-lg {
+    margin: 0 0 40px;
+    padding: 0;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: start;
+    -webkit-align-items: flex-start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+
+    li {
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+      flex: 0 0 auto;
+      margin: 0;
+      padding: 10px 0 0 0;
+      box-sizing: border-box;
+      border-radius: 2px;
+      display: block; // prevents gap at bottom of grid
+    }
+
+    // layouts are assigned randomly by JS
+    &.layout-1 li {
+
+      &:nth-child(3n+1) { // first column width
+        width: 33%;
+        padding-right: 10px;
+      }
+      &:nth-child(3n+2) { // second column width
+        width: 27%;
+      }
+      &:nth-child(3n+3) { // third column width
+        width: 40%;
+        padding-left: 10px;
+      }
+      &:nth-child(1) { // first column vertical indent
+        padding-top: 40px;
+      }
+      &:nth-child(2) { // second column vertical indent
+        padding-top: 150px;
+      }
+      &:nth-child(3) {  // third column vertical indent
+        padding-top: 0;
+      }
+    }
+
+    &.layout-2 li {
+
+      &:nth-child(3n+1) { // first column width
+        width: 33%;
+      }
+      &:nth-child(3n+2) { // second column width
+        width: 40%;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      &:nth-child(3n+3) { // third column width
+        width: 27%;
+      }
+      &:nth-child(1) { // first column vertical indent
+        padding-top: 40px;
+      }
+      &:nth-child(2) { // second column vertical indent
+        padding-top: 0;
+      }
+      &:nth-child(3) {  // third column vertical indent
+        padding-top: 150px;
+      }
+    }
+
+    figure {
+      position: relative;
+      -webkit-transition: -webkit-filter 250ms ease;
+      transition: -webkit-filter 250ms ease;
+      -o-transition: filter 250ms ease;
+      transition: filter 250ms ease;
+      transition: filter 250ms ease, -webkit-filter 250ms ease;
+    }
+
+    .figure_number {
+      display: inline-block;
+      position: absolute;
+      bottom: 18px;
+      left: 18px;
+      border-radius: 50%;
+      min-height: 30px;
+      min-width: 30px;
+      padding: 5px 0px;
+      font-weight: 700;
+      font-size: 2rem;
+      line-height: 1;
+      vertical-align: 1px;
+      text-align: center;
+      background-color: #fff;
+      color: #284E36;
+      -webkit-transition: all 250ms ease;
+      -o-transition: all 250ms ease;
+      transition: all 250ms ease;
+    }
+
+    figcaption {
+      display: none;
+    }
+
+    .lw_image {
+      display: block;
+      width: 100%;
+      margin: 0;
+    }
+
+    .caption_box {
+
+      .inner {
+        padding: 60px 40px 35px 65px;
+        background-color: #284E36;
+      }
+    }
+
+    .title {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #FAFAF8;
+      font-family: "Canela Deck Web";
+      font-size: 2.8rem;
+      line-height: 1.21;
+      margin-bottom: 0.6em;
+
+      &::before {
+        content:'';
+        display: block;
+        width: 80px;
+        height: 3px;
+        background-color: #fff;
+        margin-bottom: 17px;
+      }
+    }
+
+    .caption {
+      display: inline;
+      margin-right: 8px;
+      font-size: 1.6rem;
+      line-height: 1.45;
+      color: #fff;
+      -webkit-transition: color 250ms ease;
+      -o-transition: color 250ms ease;
+      transition: color 250ms ease;
+
+      a {
+        color: lighten(#e8cb58, 14%);
+        text-decoration: underline;
+      }
+    }
+
+    .caption_number {
+      display: inline; // prevents break between number and caption
+      border-radius: 50%;
+      height: 15px;
+      padding: 0 4px;
+      font-weight: 700;
+      font-size: 1.3rem;
+      line-height: 1.3;
+      vertical-align: 1px;
+      text-align: center;
+      background-color: #fff;
+      color: #284E36;
+      -webkit-transition: background-color 250ms ease;
+      -o-transition: background-color 250ms ease;
+      transition: background-color 250ms ease;
+    }
+
+
+    // Desktop active state: highlight caption
+    figure.is-active {
+      -webkit-filter: brightness(1.1);
+      filter: brightness(1.1);
+
+      .figure_number {
+        background-color: #e8cb58;
+        color: darken(#284E36, 6%);
+      }
+    }
+
+    .caption.is-active {
+      color: lighten(#e8cb58, 6%);
+
+      .caption_number {
+        background-color: lighten(#e8cb58, 6%);
+      }
+    }
+  }
+
+  @media @screen-sm {
+    display: none;
+  }
+}
+
+
+//----------------------------
+//  Mobile Sliders
+//----------------------------
+.lw_gallery_fullwidth_slider.lw_gallery_fullwidth_slider { // override .swiper-container
+
+  @media @screen-lg {
+    display: none;
+  }
+
+  @media @screen-sm {
+    display: block;
+    margin-bottom: 10px;
+
+    .swiper-slide {
+      width: auto;
+    }
+
+    figure {
+      position: relative;
+    }
+
+    .lw_image {
+      display: block;
+      width: auto;
+      height: 200px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .caption {
+      position: absolute;
+      left: 1px;
+      right: 1px;
+      bottom: 0;
+      padding: 5px 7px;
+      background-color: fade(#284E36, 70%);
+      color: #FAFAF8;
+      font-size: 1.4rem;
+      line-height: 1.35;
+      text-overflow: ellipsis; // only show one line of text
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    // Mobile active state: show full caption
+    figure.is-active {
+      .caption {
+        overflow: visible;
+        white-space: normal;
+      }
+    }
+
+    .figure_number,
+    .caption_number,
+    .caption_box {
+      display: none;
+    }
+  }
+}
