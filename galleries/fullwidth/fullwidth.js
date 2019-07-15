@@ -213,9 +213,12 @@
             loop: true,
             keyboardControl: true,
             grabCursor: true,
+            observeParents: true,
+            observer: true // these properties prevent issues where translateX is set incorrectly on load and slider doesnt appear on mobile
           });
         }
 
+        // Prevent galleries being initialized again
         slidersEnabled = true;
       });
     });
