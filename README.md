@@ -45,13 +45,23 @@ Customize the gallery styles by changing the LESS variables in:
 ## Gallery Types: 
 ### Mini Gallery
 Mini gallery displays the first image in the gallery and opens the gallery fullscreen when clicked.
-These gallery styles and scripts are only loaded when there's a gallery on the page.
+Mini gallery theme is only loaded when the page has a mini gallery.
 
-Go to the fullscreen gallery to change the fullscreen settings.
+Click to show fullscreen gallery with all gallery images.
+Go to the fullscreen gallery theme to change fullscreen settings.
 
 <br/><br/>
 ---
 
+### Large Gallery
+Large gallery has a letterboxed image with 5 thumbnails down the left side.
+Large gallery theme is only loaded when the page has a large gallery.
+
+Click to show fullscreen gallery with all gallery images.
+Go to the fullscreen gallery theme to change fullscreen settings.
+
+<br/><br/>
+---
 ### Carousel Gallery
 
 Carousel gallery displays a slideshow of images that opens fullscreen when clicked.

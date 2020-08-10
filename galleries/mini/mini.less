@@ -2,80 +2,80 @@
  *
  *  Mini Gallery
  *  --------------------
+ *
  *  Docs: https://github.com/whitewhale/LWGalleries
  *
  *  Mini gallery displays the first image in the gallery and opens the gallery fullscreen when clicked.
- *
- *  Go to the fullscreen gallery to change fullscreen settings.
- *  These gallery styles and scripts are only loaded when there's a gallery on the page.
+ *  Mini gallery theme is only loaded when the page has a mini gallery.
+ * 
+ *  Click to show fullscreen gallery with all gallery images.
+ *  Go to the fullscreen gallery theme to change fullscreen settings.
  *
   **********************************************
  */
 
 @import "../all-custom-gallery-variables.less";   // Import custom gallery variables
 
-
 .lw_gallery_mini {
   position: relative; // contains gallery-info
   display: inline-block;
-  margin-bottom: 25px;
+  margin: 0 10px 55px;
   max-width: 100%; // IE11 bugfix
 
-  .gallery-info {
+  &:focus {
+    outline: none; // removes outline when clicking gallery
+  }
+
+  .gallery_label {
     display: @mini-label-display;
     z-index: 1; // above photos
     position: absolute; // make it absolute so we can cap the width, without JS
     left: 0;
     right: 0;
-    margin: -8.5% 10px 0 15px; // top offset relative to width of gallery
-    padding: 11px 8px 10px 52px;
-    line-height: 1.15;
-    background-color: @mini-label-background-color;
+    margin: -35px 15% 0 15%; 
+    padding: 8px 15px 9px;
+    border-radius: 1px;
     -webkit-box-shadow: 0px 0px 5px -1px rgba(0, 0, 0, 0.8);
     box-shadow: 0px 0px 5px -1px rgba(0, 0, 0, 0.8);
     cursor: pointer;
-    text-align: left;
-  }
-
-  .gallery-info::before { // picture icon
-    content: '';
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 33px;
-    height: 98px;
-    background-image: url('/_ingredients/themes/global/galleries/mini/picture-icon.png');
-    background-repeat: no-repeat;
-    -webkit-background-size: contain;
-    background-size: contain;
-  }
-
-  .gallery-name {
-    position: relative; // contains curly arrow
-    margin: 0 0 4px 0;
+    text-align: center;
+    line-height: 1.15;
+    background-color: @mini-label-background-color;
+    color: @mini-label-color;
     font-family: @mini-label-font;
     font-size: @mini-label-font-size;
     text-transform: @mini-label-text-transform;
     font-weight: @mini-label-font-weight;
-    color: @mini-label-color;
+    
+    &::after {
+      content: '\f064';
+      display: inline;
+      margin-left: 4px;
+      font-size: 0.8em;
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      font-style: normal;
+      font-variant: normal;
+      text-rendering: auto;
+      line-height: 1;
+      color: white;
+    }
   }
 
-  .gallery-title {
-    margin: 0 0 0 0;
-    font-family: @mini-title-font;
-    font-size: @mini-title-font-size;
-    font-weight: @mini-title-font-weight;
-    color: @mini-title-color;
-  }
-
-  .gallery-images.gallery-images { // increases specificity
+  .gallery_images.gallery_images { // increases specificity
     cursor: pointer;
     padding: 0;
     margin: 0;
     list-style-type: none;
 
-    figure {
+    li {
       margin: 0;
+    }
+
+    li::before {
+      display: none; // hide default list bullets
     }
 
     li:not(:first-child) { // hide all but first image
@@ -88,50 +88,28 @@
       margin-top: 2%;
       max-width: 100%; // IE11 bugfix
 
-      img { // first gallery image is tilted
+      figure {
+        margin: 0;
+      }
+
+      img { 
         z-index: 1; // above pseudo element
         position: relative;
         margin: 0;
         border: 8px solid #fff;
         -webkit-box-shadow: rgba(0, 0, 0, 0.8) 0px 0px 5px -1px;
         box-shadow: rgba(0, 0, 0, 0.8) 0px 0px 5px -1px;
-        -webkit-transform: rotate(-2deg);
-        -ms-transform: rotate(-2deg);
-        transform: rotate(-2deg);
-        -webkit-transition: -webkit-transform .3s;
-        transition: transform .3s;
-      }
-
-      &::before { // pseudo element appears behind first image
-        content:'';
-        display: block;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        border: 8px solid #fff;
-        -webkit-box-shadow: rgba(0, 0, 0, 0.8) 0px 0px 5px -1px;
-        box-shadow: rgba(0, 0, 0, 0.8) 0px 0px 5px -1px;
-        -webkit-transform: rotate(1.5deg);
-        -ms-transform: rotate(1.5deg);
-        transform: rotate(1.5deg);
-        -webkit-transition: -webkit-transform .3s;
-        transition: transform .3s;
+        transition: -webkit-filter 150ms ease;
+        transition: filter 240ms ease;
+        transition: filter 240ms ease, -webkit-filter 240ms ease;
       }
     }
   }
 
-  &:hover .gallery-images.gallery-images li:first-child {
-    img {
-      -webkit-transform: rotate(2deg);
-      -ms-transform: rotate(2deg);
-      transform: rotate(2deg);
-    }
-    &::before {
-      -webkit-transform: rotate(-1.5deg);
-      -ms-transform: rotate(-1.5deg);
-      transform: rotate(-1.5deg);
+  &:hover {
+    
+    .gallery_images.gallery_images li:first-child img {
+      filter: brightness(1.12);
     }
   }
 

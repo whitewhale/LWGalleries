@@ -1,0 +1,17 @@
+<widget type="template">
+  <title>Large</title>
+  <args>
+    <arg id="type">large</arg>
+    <arg id="format">
+    	<div class="gallery_slide">
+    		<div class="gallery_slide_bg">
+    			<img class="gallery_slide_img" src="{thumbnail}" alt="{alt}"/>
+    		</div>
+    		<div class="gallery_slide_caption">{caption}</div>
+    	</div>
+        <button class="gallery_btn"><span class="gallery_btn_img" style="background-image:url({thumbnail})"></span></button>
+    </arg>
+    <arg id="thumb_width">870</arg>
+    <arg id="thumb_height">auto</arg>
+  </args>
+</widget>

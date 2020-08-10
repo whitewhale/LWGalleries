@@ -1,29 +1,23 @@
 // Customize the gallery styles here
+// ---------------------------------------------------------
 
 
+//  L&C COLOR VARIABLES
+// ---------------------------------------------------------
+@black: #000;
+@white: #ffffff;
 
-// Carousel Gallery
-// --------------------------------------------
+@dark-gray: #393430;
+@mid-gray: #919191;
+@light-gray: #ebebeb;
 
-// Carousel color
-@carousel-background-color: rgba(0, 0, 0, 0.7);
+@orange: #cd511c;
 
-// Carousel title
-@carousel-title-display: block;
-@carousel-title-font: Helvetica Neue, Helvetica, Arial, sans-serif;
-@carousel-title-font-size: 1.6rem;
+@focus-outline-color: #4DB3F6;
 
-// Carousel caption
-@carousel-caption-display: block; // controls display of caption and credit
-@carousel-caption-font: Helvetica Neue, Helvetica, Arial, sans-serif;
-@carousel-caption-font-size: 1.15rem;
-@carousel-caption-color: #fff;
-
-// Carousel credit
-@carousel-credit-font: Helvetica Neue, Helvetica, Arial, sans-serif;
-@carousel-credit-font-size: 1.0rem;
-@carousel-credit-color: #aaa;
-@carousel-credit-display: block;
+@font-franklin: franklin-gothic-urw, sans-serif; // 300, 300i, 400, 400i, 500, 500i, 700, 700i
+@font-goudy: goudy-old-style, serif;  // 400, 400i, 700, 800
+@font-acumin: acumin-pro, sans-serif; // 300, 300i, 500, 500i, 600, 600i, 700, 700i
 
 
 
@@ -33,19 +27,24 @@
 
 // Mini gallery label
 @mini-label-display: block;
-@mini-label-background-color: #1e376d;
-@mini-label-color: #b2bcd4;
-@mini-label-text-transform: uppercase;
+@mini-label-background-color: @orange;
+@mini-label-color: @white;
+@mini-label-text-transform: none;
+@mini-label-font: @font-franklin;
 @mini-label-font-weight: 500;
-@mini-label-font: Helvetica Neue, Helvetica, Arial, sans-serif;
-@mini-label-font-size: 1.8rem;
+@mini-label-font-size: 1.6rem;
 
-// Mini gallery title
-@mini-title-color: #fff;
-@mini-title-font-size: 1.9rem;
-@mini-title-font: Helvetica Neue, Helvetica, Arial, sans-serif;
-@mini-title-font-weight: 200;
 
+
+
+// Large Gallery
+// --------------------------------------------
+
+@large-background-color: #a1a1a1;
+@large-caption-color: #555;
+@large-caption-font: @font-acumin;
+@large-caption-font-weight: 300;
+@large-caption-font-size: 1.4rem;
 
 
 
@@ -53,41 +52,41 @@
 // --------------------------------------------
 
 // Fullscreen overlay
-@fullscreen-background-color: #000;
+@fullscreen-background-color: #f7f7f7;
 
 // Fullscreen title
-@fullscreen-title-color: #fff;
-@fullscreen-title-font: Helvetica Neue, Helvetica, Arial, sans-serif;
-@fullscreen-title-font-size: 2.6rem;
-@fullscreen-title-font-weight: 500;
+@fullscreen-title-color: @dark-gray;
+@fullscreen-title-font: @font-goudy;
+@fullscreen-title-font-size: 3rem;
+@fullscreen-title-font-weight:800;
 
 // Fullscreen caption
-@fullscreen-caption-color: #fff;
-@fullscreen-caption-font: Helvetica Neue, Helvetica, Arial, sans-serif;
+@fullscreen-caption-color: @dark-gray;
+@fullscreen-caption-font: @font-acumin;
 @fullscreen-caption-font-size: 1.6rem;
-@fullscreen-caption-font-weight: 600;
+@fullscreen-caption-font-weight: 500;
 
-// Button settings
-@fullscreen-btn-size:                60px;
+// Arrow Button settings
+@fullscreen-btn-size:                50px;
 @fullscreen-btn-arrowsize:           @fullscreen-btn-size / 4;
 
-// Button size on mobile
-@fullscreen-btn-size-small:          40px;
+// Arrow Button size on mobile
+@fullscreen-btn-size-small:          35px;
 @fullscreen-btn-arrowsize-small:     @fullscreen-btn-size-small / 4;
 
-// Button colors
-@fullscreen-btn-color:               #fff;
-@fullscreen-btn-bg:                  #000;
+// Arrow Button colors
+@fullscreen-btn-color:               @white;
+@fullscreen-btn-bg:                  @dark-gray;
 @fullscreen-btn-border:              #fff;
 
-// Button hover colors
-@fullscreen-btn-hover-color:         #000;
-@fullscreen-btn-bg-hover:            #fff;
+// Arrow Button hover colors
+@fullscreen-btn-hover-color:         @white;
+@fullscreen-btn-bg-hover:            @orange;
 @fullscreen-btn-hover-border-color:  #fff;
 
 // Loader icon colors
-@fullscreen-loader-color-1:           #426928;
-@fullscreen-loader-color-2:           #0a51a7;
-@fullscreen-loader-color-3:           #fba850;
-@fullscreen-loader-color-4:           #02427b;
+@fullscreen-loader-color-1:           @orange;
+@fullscreen-loader-color-2:           lighten(@orange, 10%);
+@fullscreen-loader-color-3:           lighten(@orange, 20%);
+@fullscreen-loader-color-4:           lighten(@orange, 30%);
 

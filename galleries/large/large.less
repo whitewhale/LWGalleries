@@ -1,0 +1,172 @@
+/**********************************************
+ *
+ *  Large Gallery
+ *  --------------------
+ *
+ *  Docs: https://github.com/whitewhale/LWGalleries
+ *
+ *  Large gallery has a letterboxed image with 5 thumbnails down the left side.
+ *  Large gallery theme is only loaded when the page has a large gallery.
+ * 
+ *  Click to show fullscreen gallery with all gallery images.
+ *  Go to the fullscreen gallery theme to change fullscreen settings.
+ *
+  **********************************************
+ */
+
+ @import "../all-custom-gallery-variables.less";   // Import custom gallery variables
+
+
+.lw_gallery_large {
+  margin-bottom: 135px; // space for caption
+  margin-left: 62px; // space for buttons
+
+  @media (min-width: 1360px),
+         (min-width: 1160px) and (max-width: 1299px) {
+    margin-left: 10px;
+  }
+
+  
+  &:not(:first-child) {
+    margin-top: 50px;  
+  }
+
+  .gallery_title { // title used for fullscreen gallery
+    display: none;
+  }
+
+  .gallery {
+    width: 100%;
+    position: relative;
+
+    &::before {
+      content:'';
+      display: block;
+      width: 100%;
+      padding-bottom: calc(500 / 760 * 100%); // fixed aspect ratio
+    }
+
+    &:focus {
+      outline: none; // removes outline when clicking gallery
+    }
+  }
+
+  &.has-btns .gallery_btn { // only reveal buttons if there is >1 image
+    opacity: 1;
+  }
+
+  .gallery_btn {
+    z-index: 1; // above main images
+    -webkit-appearance: none;
+    background-color: @white;
+    border: none;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: -62px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 240ms ease; // fade-in on load 
+
+    &:nth-of-type(1) { // shows up to five thumbs along the left, click to show all images in fullscreen gallery
+      top: 0px;
+    }
+    &:nth-of-type(2) {
+      top: calc(50px + 16px);
+    }
+    &:nth-of-type(3) {
+      top: calc(50px + 16px + 50px + 16px);
+    }
+    &:nth-of-type(4) {
+      top: calc(50px + 16px + 50px + 16px + 50px + 16px);
+    }
+    &:nth-of-type(5) {
+      top: calc(50px + 16px + 50px + 16px + 50px + 16px + 50px + 16px);
+    }
+    &:nth-of-type(n+6) {
+      display: none; // hide remaining thumbs
+    }
+
+    // interactive behavior
+    .gallery_btn_img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.4;
+      transition: opacity 280ms ease;
+    }
+    &.is-active .gallery_btn_img {
+      opacity: 1;
+    }
+    &:hover .gallery_btn_img,
+    &:focus .gallery_btn_img {
+      opacity: 0.6;
+    }
+    &:focus {
+      outline: none;
+      box-shadow: inset 0 0 0px 3px @dark-gray;
+    }
+    &.is-active:focus {
+      // box-shadow: none;
+    }
+  }
+
+  .gallery_slide {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+
+    // interactive behavior
+    opacity: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    &.is-active {
+      z-index: 0;
+      opacity: 1;
+      pointer-events: all;
+      transition: opacity 600ms ease 100ms;
+    }
+  }
+
+  .gallery_slide_bg { // click this element to open fullscreen gallery 
+    width: 100%;
+    height: 100%;
+    line-height: 0;
+    text-align: center;
+    background-color: @large-background-color;
+
+    picture {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .gallery_slide_img {
+    margin: 0;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .gallery_slide_caption {
+    margin-top: 9px;
+    color: @large-caption-color;
+    font-family: @large-caption-font;
+    font-size: @large-caption-font-size;
+    font-weight: @large-caption-font-weight;
+    line-height: 1.29;
+  }
+}

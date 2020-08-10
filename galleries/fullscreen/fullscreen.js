@@ -5,7 +5,9 @@
  *  Docs: https://github.com/whitewhale/LWGalleries
  *  Author: @nroyall @whitewhale
  *  Licensed under the MIT license
-
+ *
+ *  Each image and caption must be wrapper in $imageContainer or <li> element 
+ *
  ****************************************************************************
  */
 
@@ -16,12 +18,12 @@
     // Default options
     options: {
       title: false,           // a text string or jQuery selector containing the gallery title
-      caption: false,         // a jQuery selector containing each image caption
-      imageContainer: 'li',    // the element or element class containing each image and image caption (defaults to list element)
+      imageContainer: 'li',   // jQuery selector containing each image and image caption (defaults to list element) 
+      caption: false,         // jQuery selector containing each image caption (must be inside imageContainer)
+      trigger: false,         // jQuery selector that opens fullscreen gallery when clicked (defaults to gallery container)
       width: false,           // a number denoting the image width. If no width is specified, the original image width will be used.
       autoplay: false,        // number of seconds to wait between images, or set to true for default speed (3s). Autoplay will stop when nav buttons are clicked.
       pauseOnHover: false,    // pause autoplay when an image is hovered
-      trigger: false,         // a jQuery selector for an element that opens the gallery when clicked. By default, the gallery opens when the image container is clicked.
       hide: false,            // hide the image container after initializing the gallery.
       destroyOnClose: false  // remove the fullscreen gallery on close
     },
@@ -39,46 +41,84 @@
         self.delay = delay; // store the autoplay delay as a global variable
       }
 
+      // Retrieve images and add them to the list
+      var $images = self.element.find('img');
+      var $fsgalleryList = $('<ul class="fsgallery-inner"></ul>');
+
+      $images.each( function() {
+
+        var $image = $(this);
+        var width = self.options.width;
+        var imageSrc = $image.attr('src'); // use the original image source if no width is set
+
+        // If a width is set, create the source for the large version of the image
+        if ( width ) {
+          var imageWidth = ( width > $image.data('maxW') ) ? $image.data('maxW') : width; // constrain to the the max image width
+          var src = $image.attr('src');
+          var srcBefore = '';
+          var srcAfter = $image.attr('src').substr($image.attr('src').lastIndexOf('/'));
+
+          if ( ~src.indexOf('width') ) {
+            srcBefore = $image.attr('src').substr(0, $image.attr('src').indexOf('width/'));
+          }
+          else if ( ~src.indexOf('height') ) {
+            srcBefore = $image.attr('src').substr(0, $image.attr('src').indexOf('height/'));
+          }
+
+          imageSrc = srcBefore+'width/'+imageWidth+srcAfter; // redefine the image source
+        }
+
+        // Get this image caption if there is one (requires each image and caption to be wrapped in a containing element)
+        var caption = ( self.options.caption && typeof self.options.caption === 'object' ) ? $image.closest(self.options.imageContainer).find(self.options.caption).text() : '';
+        var imageCaption = caption.length > 0 ? '<div class="fsgallery-caption">'+caption+'</div>' : '';
+
+        var imageAlt = ( $image.attr('alt') ) ?  $image.attr('alt') : '';
+        var $newImage = $('<li class="fsgallery-image"><img src="'+imageSrc+'" alt="'+imageAlt+'" />'+imageCaption+'</li>');
+
+        // Add the image to the gallery list
+        $fsgalleryList.append($newImage);
+      });
+
+      // Create fullscreen gallery container for this gallery
+      var $fsgallery = $('<div id="gid-'+self.id+'" class="fsgallery" tabindex="-1" style="opacity:0; z-index: -9999; pointer-events:none;"><span class="fsgallery-close" tabindex="0 role="button" title="close"></span><div class="fsgallery-nav"><a href="#" class="prev" title="previous image">Prev »</a><a href="#" class="next" title="next image">Next »</a></div><div class="fsgallery-loader is-visible"><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div></div></div>').append($fsgalleryList);
+
+      // Add fullscreen gallery to the page
+      $fsgallery.appendTo($body);
+
       // Hide original image container if hide is "true"
       if ( self.options.hide ) {
         self.element.hide();
       }
 
-      // Set the title and trigger options
+      // Set the options
       self._setOptions({
         'trigger': self.options.trigger,
         'title': self.options.title
       });
 
-      // Make gallery focusable
-      $(self.element).attr({
+      // Make trigger element accessible (use the first element if there are multiple triggers)
+      self.triggerEl.first().attr({ 
         'tabindex' : '0',
         'role' : 'button',
         'title' : 'Open gallery'
       });
 
-      // Open fullscreen gallery when the image container is clicked. The clicked image displays first.
-      $(self.element).on('click', function(e){
-        var $clickedImage = $($(e.target).closest(self.options.imageContainer)).find('img'); // requires each image and caption to be wrapped in a containing element
+      // Open fullscreen gallery when the trigger element is clicked
+      self.triggerEl.on('click', function(e){ 
+        var $clickedImage = $($(e.target).closest(self.options.imageContainer)).find('img'); // display clicked image when opening fullscreen gallery
         self._open( $clickedImage );
       });
 
-      // Open fullscreen gallery if gallery is focused and space or enter is pressed
+      // Open fullscreen gallery if trigger element is focused and space or enter is pressed
       $body.keydown(function(e) {
-
-        if ( $(self.element).is(':focus') ) {
+        if ( self.triggerEl.is(':focus') ) {
           var keyCode = e.which;
-          // If pressing space bar or return
-          if( keyCode == 13 || keyCode == 32 ) {
-            var $clickedImage = $($(e.target).find(self.options.imageContainer)).find('img').get(0); // requires each image and caption to be wrapped in a containing element
+          if( keyCode == 13 || keyCode == 32 ) { // if pressing space bar or return
+            e.preventDefault();
+            var $clickedImage = $($(e.target).find(self.options.imageContainer)).find('img').get(0); 
             self._open( $clickedImage );
           }
         }
-      });
-
-      $(self.element).on('click', function(e){
-        var $clickedImage = $($(e.target).closest(self.options.imageContainer)).find('img'); // requires each image and caption to be wrapped in a containing element
-        self._open( $clickedImage );
       });
 
       // Change image on nav click
@@ -87,7 +127,7 @@
         e.preventDefault();
 
         var $this = $(this); // 'this' is now the clicked nav element
-        var $allImages = $body.find('#gid-'+self.id).find('.fsgallery-image');
+        var $allImages = $('#gid-'+self.id).find('.fsgallery-image');
         var $subImage;
 
         if ( $this.hasClass('prev')) {
@@ -120,9 +160,9 @@
       $body.keydown(function(e) {
 
         // If this gallery is open
-        if ( $body.find('#gid-'+self.id).hasClass('fsgallery-open') && $body.hasClass('fsgallery-open') ) {
+        if ( $('#gid-'+self.id).hasClass('fsgallery-open') && $body.hasClass('fsgallery-open') ) {
           var keyCode = e.which;
-          var $thisGallery = $body.find('#gid-'+self.id);
+          var $thisGallery = $('#gid-'+self.id);
           var $prevArrow = $thisGallery.find('.fsgallery-nav').find('.prev');
           var $nextArrow = $thisGallery.find('.fsgallery-nav').find('.next');
           var $allImages = $thisGallery.find('.fsgallery-image');
@@ -194,7 +234,7 @@
           if ( !self.autoplay && self.delay ) { // if autoplay isn't already running and autoplay delay is set
             self.autoplay = true;
             self.globalFGTimer = setInterval(function(){
-              $body.find('#gid-'+self.id).find('.fsgallery-nav').find('.next').trigger('click'); // prevent slideshow stopping when triggering click
+              $('#gid-'+self.id).find('.fsgallery-nav').find('.next').trigger('click'); // prevent slideshow stopping when triggering click
             }, self.delay );
           }
 
@@ -207,8 +247,7 @@
     // Destroy the fullscreen gallery and clean up modifications made to the DOM
     destroy: function () {
       var self = this;
-
-      $('body').find('#gid-'+self.id).remove(); // remove this fullscreen gallery
+      $('#gid-'+self.id).remove(); // remove this fullscreen gallery
       self.element.show(); // show original image container
 
       // Stop autoplay if enabled
@@ -225,64 +264,13 @@
       var self = this;
       var $body = $('body');
 
-      // Load fullscreen gallery if not already on the page
-      if ( !$body.find('#gid-'+self.id).length ) {
-
-        // Retrieve images from original gallery
-        var $images = self.element.find('img');
-
-        // Duplicate all the images into a new list
-        var $fsgalleryList = $('<ul class="fsgallery-inner"></ul>');
-
-        $images.each( function() {
-
-          var $image = $(this);
-          var width = self.options.width;
-          var imageSrc = $image.attr('src'); // use the original image source if no width is set
-
-          // If a width is set, create the source for the large version of the image
-          if ( width ) {
-            var imageWidth = ( width > $image.data('maxW') ) ? $image.data('maxW') : width; // constrain to the the max image width
-            var src = $image.attr('src');
-            var srcBefore = '';
-            var srcAfter = $image.attr('src').substr($image.attr('src').lastIndexOf('/'));
-
-            if ( ~src.indexOf('width') ) {
-              srcBefore = $image.attr('src').substr(0, $image.attr('src').indexOf('width/'));
-            }
-            else if ( ~src.indexOf('height') ) {
-              srcBefore = $image.attr('src').substr(0, $image.attr('src').indexOf('height/'));
-            }
-
-            imageSrc = srcBefore+'width/'+imageWidth+srcAfter; // redefine the image source
-          }
-
-          // Get this image caption if there is one (requires each image and caption to be wrapped in a containing element)
-          var caption = ( self.options.caption && typeof self.options.caption === 'object' ) ? $image.closest(self.options.imageContainer).find(self.options.caption).text() : '';
-          var imageCaption = caption.length > 0 ? '<div class="fsgallery-caption">'+caption+'</div>' : '';
-
-          var imageAlt = ( $image.attr('alt') ) ?  $image.attr('alt') : '';
-          var $newImage = $('<li class="fsgallery-image"><img src="'+imageSrc+'" alt="'+imageAlt+'" />'+imageCaption+'</li>');
-
-          // Add the image to the gallery list
-          $fsgalleryList.append($newImage);
-        });
-
-        // Create fullscreen gallery containing all of these images
-        var $fsgallery = $('<div id="gid-'+self.id+'" class="fsgallery" tabindex="-1"><button class="fsgallery-close" tabindex="0 role="button" title="close"></button><div class="fsgallery-nav"><a href="#" class="prev" title="previous image">Prev »</a><a href="#" class="next" title="next image">Next »</a></div><div class="fsgallery-loader is-visible"><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div><div class="fsgallery-loader-line"></div></div></div>').append($fsgalleryList);
-
-        // Add fullscreen gallery to the page
-        $fsgallery.appendTo($body);
-      }
-
-
-      // Open the gallery if not currently open
+      // If the gallery is not currently open
       if ( !$body.hasClass('fsgallery-open') ) {
 
         // Prevent scroll on body element while gallery is open
         $body.addClass('fsgallery-open');
 
-        var $fsgallery = $body.find('#gid-'+self.id).addClass('fsgallery-open').attr('tabindex','0').focus();
+        var $fsgallery = $('#gid-'+self.id).addClass('fsgallery-open').attr('tabindex','0').focus();
         var $allImages = $fsgallery.find('.fsgallery-image');
         var $firstImage = $allImages.first(); // show the first image first by default
 
@@ -293,6 +281,7 @@
             $firstImage = $allImages.find('img[src*="'+imageName+'"]').parent('.fsgallery-image'); // find this image in our gallery
           }
         }
+
 
         // Reveal gallery after the image displayed first has successfully loaded
         $firstImage.imagesLoaded().done(function() {
@@ -305,13 +294,11 @@
             self.autoplay = true;  // global variable signals that autoplay is running
 
             self.globalFGTimer = setInterval(function(){ // global variable for the autoplay timer
-              $body.find('#gid-'+self.id).find('.fsgallery-nav').find('.next').trigger('click'); // prevent slideshow stopping when triggering click
+              $('#gid-'+self.id).find('.fsgallery-nav').find('.next').trigger('click'); // prevent slideshow stopping when triggering click
             }, self.delay );
           }
         }).addClass('fsgallery-selected');
       }
-
-
 
       // Trigger an event when the gallery is opened
       self._trigger( 'open' );
@@ -322,15 +309,14 @@
     _close: function( ) {
 
       var self = this;
-      var $body = $('body');
 
       // Remove body class to allow other galleries to open
-      $body.removeClass('fsgallery-open');
+      $('body').removeClass('fsgallery-open');
 
-      // Move focus back to the small gallery
-      $(self.element).focus();
+      // Move focus back to the gallery trigger
+      self.triggerEl.focus();
 
-      var $fsgallery = $body.find('#gid-'+self.id).removeClass('fsgallery-open').attr('tabindex','-1');
+      var $fsgallery = $('#gid-'+self.id).removeClass('fsgallery-open').attr('tabindex','-1');
 
       // Stop autoplay if enabled
       if ( self.autoplay ) {
@@ -360,9 +346,7 @@
       var self = this;
       var fnMap = {
         'trigger': function () {
-          if ( value ) {
-            self._setTrigger(value);
-          }
+          self._setTrigger(value);
         },
         'title': function () {
           if ( value ) {
@@ -379,14 +363,11 @@
     },
 
 
-    // Open fullscreen gallery when the trigger element is clicked
+    // Set the trigger that opens the fullscreen gallery, if no trigger element is passed, use the gallery container as the trigger
     _setTrigger: function( trigger ) {
 
       var self = this;
-
-      trigger.on('click', function(){
-        self._open();
-      });
+      self.triggerEl = ( trigger && typeof trigger === 'object' ) ? trigger : $(self.element); // store as a global variable
     },
 
 
@@ -398,7 +379,7 @@
       // If title is not "false"
       if ( title ) {
 
-        var $gallery = $('body').find('#gid-'+self.id);
+        var $gallery = $('#gid-'+self.id);
 
         // If title is passed as a jQuery object, transform it to a string first
         var titleString = ( typeof title === 'object' ) ? $.trim(title.text()) : $.trim(title);

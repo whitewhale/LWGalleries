@@ -1,0 +1,17 @@
+<widget type="template">
+  <title>Mini</title>
+  <args>
+    <arg id="type">mini</arg>
+    <arg id="format">
+			<li>
+			  <figure>
+			    <img src="{url}" alt="{alt}" class="{class}"/>
+			    <figcaption>
+			      {<div class="caption">|caption|</div>}
+			      {<div class="credit">|credit|</div>}
+			    </figcaption>
+			  </figure>
+			</li>
+    </arg>
+  </args>
+</widget>

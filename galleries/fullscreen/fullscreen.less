@@ -38,6 +38,10 @@ body.fsgallery-open {
     z-index: 9999 !important; // place gallery above everything
     opacity: 1 !important;
   }
+
+  &:focus {
+    outline: none; // removes outline when clicking gallery
+  }
 }
 
 .fsgallery-inner {
@@ -159,6 +163,7 @@ body.fsgallery-open {
   font-family: @fullscreen-caption-font;
   font-size: @fullscreen-caption-font-size;
   font-weight: @fullscreen-caption-font-weight;
+  line-height: 1.2;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -278,8 +283,6 @@ body.fsgallery-open {
   width: 25px;
   height: 25px;
   overflow: hidden;
-  background: none;
-  border: none;
 
   &:before, &:after {
     content: '';
