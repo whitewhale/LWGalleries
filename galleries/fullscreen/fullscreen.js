@@ -69,7 +69,7 @@
         }
 
         // Get this image caption if there is one (requires each image and caption to be wrapped in a containing element)
-        var caption = ( self.options.caption && typeof self.options.caption === 'object' ) ? $image.closest(self.options.imageContainer).find(self.options.caption).text() : '';
+        var caption = ( self.options.caption && typeof self.options.caption === 'object' ) ? $image.closest(self.options.imageContainer).find(self.options.caption).html() : '';
         var imageCaption = caption.length > 0 ? '<div class="fsgallery-caption">'+caption+'</div>' : '';
 
         var imageAlt = ( $image.attr('alt') ) ?  $image.attr('alt') : '';
