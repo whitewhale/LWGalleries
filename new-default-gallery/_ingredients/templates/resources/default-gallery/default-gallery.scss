@@ -1,0 +1,522 @@
+// ===================================================================
+//
+//  LiveWhale Default Gallery
+// 
+// ===================================================================
+
+
+
+// Fullscreen overlay
+$background-color: #f7f7f7;
+
+// Fullscreen title
+$title-color: #393430;
+$title-font: inherit;
+$title-font-size: inherit;
+$title-font-weight: inherit;
+
+// Fullscreen caption
+$caption-color: #393430;
+$caption-font: inherit;
+$caption-font-size: inherit;
+$caption-font-weight: inherit;
+
+// Arrow Button settings
+$btn-size:                50px;
+$btn-arrowsize:           $btn-size / 4;
+
+// Arrow Button size on mobile
+$btn-size-small:          35px;
+$btn-arrowsize-small:     $btn-size-small / 4;
+
+// Arrow Button colors
+$btn-color:               #fff;
+$btn-bg:                  #393430;
+$btn-border:              #fff;
+
+// Arrow Button hover colors
+$btn-hover-color:         #fff;
+$btn-bg-hover:            #aaa;
+$btn-hover-border-color:  #fff;
+
+// Loader icon colors
+$loader-color-1:           #ccc;
+$loader-color-2:           lighten(#aaa, 10%);
+$loader-color-3:           lighten(#aaa, 20%);
+$loader-color-4:           lighten(#aaa, 30%);
+
+// Close button color
+$close-btn-color: #b4b4b4;
+$close-btn-color-hover: darken(#b4b4b4, 15%);
+
+// A11y settings
+$focus-color: #015fcc;
+
+
+
+//  Gallery Preview
+// -------------------------------------------------------------------
+
+.lw_gallery {
+	display: block;
+
+
+	// this is a link to open the gallery fullscreen 
+	.lw_gallery_preview { 
+    display: block;
+
+    &:focus-visible {
+      outline: 2px auto $focus-color;
+    }
+	}
+
+	.lw_gallery_title {
+
+	}
+
+	// the preview image is the only image loaded initially
+	.lw_gallery_preview .lw_gallery_thumb {
+		position: relative;
+		display: block;
+    max-width: 100%;
+		width: 420px;
+		height: 420px;
+		background-size: cover;
+		background-position: center;
+
+    img {
+      max-width: 100%;
+      height: auto; // ensure image fits within container
+    }
+
+		&::after {
+			z-index: 1;
+			content: '';
+			display: block;
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			width: 44px;
+			height: 44px;
+			background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' %3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg height='512px' id='Layer_1' style='enable-background:new 0 0 512 512%3B' version='1.1' viewBox='0 0 512 512' width='512px' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cg%3E%3Cg%3E%3Cpath fill='%23fff' d='M457.6 140.2l-82.5-4l-4.8-53.8c-1-11.3-11.1-19.2-22.9-18.3L51.4 88.4c-11.8 1-20.3 10.5-19.4 21.7l21.2 235.8 c1 11.3 11.2 19.2 22.9 18.3l15-1.2l-2.4 45.8c-0.6 12.6 9.2 22.8 22.4 23.5L441.3 448c13.2 0.6 24.1-8.6 24.8-21.2L480 163.5 C480.6 151 470.7 140.8 457.6 140.2z M102.6 145.5l-7.1 134.8L78.1 305l-16-178c0-0.2 0-0.3 0-0.5s0-0.3 0-0.5 c0.5-5 4.3-9 9.5-9.4l261-21.4c5.2-0.4 9.7 3 10.5 7.9c0 0.2 0.3 0.2 0.3 0.4c0 0.1 0.3 0.2 0.3 0.4l2.7 30.8l-219-10.5 C114.2 123.8 103.2 133 102.6 145.5z M436.7 382.4l-46.7-55.3l-27.5-32.7c-2.4-2.9-6.3-5.3-10.6-5.5c-4.3-0.2-7.5 1.5-11.1 4.1 l-16.4 11.9c-3.5 2.1-6.2 3.5-9.9 3.3c-3.6-0.2-6.8-1.6-9.1-3.8c-0.8-0.8-2.3-2.2-3.5-3.4l-42.8-48.9c-3.1-3.9-8.2-6.4-13.8-6.7 c-5.7-0.3-11.2 2.1-14.8 5.6L129.4 359.8l-6.8 7.4l0.3-6.8l6.8-128.9l3.3-62.9c0-0.2 0-0.4 0-0.5c0-0.2 0-0.4 0-0.5 c1.4-5.4 6.2-9.3 11.9-9l204.2 9.8l28.7 1.4l58.3 2.8c5.8 0.3 10.3 4.7 10.4 10.2c0 0.2 0.3 0.3 0.3 0.5c0 0.2 0.3 0.3 0.3 0.5 L436.7 382.4z'/%3E%3C/g%3E%3Cpath fill='%23fff' d='M373.2 262.3c19.4 0 35.2-15.8 35.2-35.2s-15.7-35.2-35.2-35.2c-19.4 0-35.2 15.7-35.2 35.2S353.7 262.3 373.2 262.3z'/%3E%3C/g%3E%3C/svg%3E");
+			background-repeat: no-repeat;
+			background-size: contain;
+		}
+	}
+
+	// the remaining thumbs are not loaded
+	.lw_gallery_thumbs {
+		display: none;
+	}
+}
+
+
+
+
+//  Fullscreen Gallery
+// -------------------------------------------------------------------
+
+// When the gallery is open
+body.lw_fsg_open {
+  overflow: hidden; // prevent body scrolling 
+
+  // set visibility to prevent tab on interactable elements 
+  // this traps focus within the fsg modal
+  * {
+    visibility: hidden; 
+  }
+}
+
+// Fullscreen gallery container
+.lw_fsg {
+  pointer-events: none; // prevent mouse events
+  z-index: -9999; // place gallery behind everything
+  overflow: scroll;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  background-color: $background-color;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+
+  &:focus {
+    outline: none; // removes outline when clicking gallery
+  }
+
+  &.lw_fsg_open {
+    pointer-events: all !important; // enable mouse events on gallery
+    z-index: 9999 !important;       // place gallery above everything
+    opacity: 1 !important;          // !important overrides inline styles
+    visibility: visible !important;
+
+    * {
+      visibility: visible;
+    }
+  }
+}
+
+// This element fades in once images are loaded
+.lw_fsg_inner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+  opacity: 0;
+  -webkit-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+
+  // Reveal once first image has loaded
+  &.is-visible {
+    pointer-events: all; // enable mouse events
+    z-index: 3;
+    opacity: 1;
+  }
+}
+
+
+// Title
+.lw_fsg_title {
+  display: block;
+  color: $title-color;
+  font-size: $title-font-size;
+  font-family: $title-font;
+  font-weight: $title-font-weight;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  max-height: 20vh;
+
+  @media only screen and (max-width: 800px) {
+    padding-top: 60px; // make room for close button
+  }
+
+  // hide title on small mobile landscape orientation
+  @media only screen and (max-height:650px) {
+    display: none;
+  }
+}
+
+.lw_fsg_images {
+	display: block;
+	list-style-type: none;
+	max-height: 80vh;
+}
+
+// Individual image container
+.lw_fsg_image {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%); // translate3d causes blurry text
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  margin: 0 auto;
+  padding-top: 20px;
+  padding-bottom: 40px;
+  width: 100%;
+  height: auto;
+  text-align: center;
+
+  // small mobile landscape orientation
+  @media only screen and (max-height:650px) {
+    padding-bottom: 0;
+  }
+  @media only screen and (max-height:800px) {
+    max-height: 70vh;
+  }
+
+  // Gallery image
+  img {
+    display: inline-block;
+    margin: 0 auto;
+    max-width: 85%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    border: 3px solid #fff;
+    box-shadow: none;
+
+    @media only screen and (max-width: 800px) {
+      max-width: 60%;
+    }
+    @media only screen and (max-height:1000px) {
+      max-height: 80vh;
+    }
+    @media only screen and (max-height:800px) {
+      max-height: 70vh;
+    }
+  }
+
+  // Inactive images
+  &:not(.lw_fsg_selected) {
+    pointer-events: none;
+    visibility: hidden !important; // prevents kb/sr access
+    opacity: 0;
+    -webkit-transition: opacity 0.6s ease; /* transform for image fade out*/
+    transition: opacity 0.6s ease;
+
+    * {
+      visibility: hidden !important; // prevents kb/sr access on caption links
+    }
+  }
+
+  // Active image
+  &.lw_fsg_selected {
+    -webkit-transition: opacity 0.4s ease-in-out; /* transform for image fade in*/
+    -o-transition: opacity 0.4s ease-in-out;
+    transition: opacity 0.4s ease-in-out;
+
+    img {
+      -webkit-transition: -webkit-transform 0.3s ease; // tranform for image shrink when gallery is closed
+      transition: -webkit-transform 0.3s ease;
+      -o-transition: -o-transform 0.3s ease;
+      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, -webkit-transform 0.3s ease, -o-transform 0.3s ease;
+    }
+
+    &.is-closed img { // shrink current image when overlay is closed
+      -webkit-transform: scale(0);
+      -ms-transform: scale(0);
+      transform: scale(0);
+    }
+  }
+}
+
+// Image caption
+.lw_fsg_caption {
+  display: block;
+  max-width: 75%;
+  margin: 0 auto;
+  padding-top: 25px;
+  color: $caption-color;
+  font-family: $caption-font;
+  font-size: $caption-font-size;
+  font-weight: $caption-font-weight;
+  line-height: 1.2;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+
+    &:hover {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+
+  @media only screen and (max-width: 800px) {
+    max-width: 65%;
+  }
+}
+
+
+// Nav arrows
+.lw_fsg_nav_btn {
+  z-index: 4; // above images
+  position: absolute;
+  display: block;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  line-height: $btn-size;
+  height: $btn-size;
+  width: $btn-size;
+  border-radius: $btn-size;
+  border: 2px solid $btn-border;
+  background-color: $btn-bg;
+  color: $btn-color;
+  cursor: pointer;
+  text-indent: -9999px;
+  outline: none;
+  transition: all .25s ease-in-out;
+
+  @media only screen and (max-width: 600px) {
+    line-height: $btn-size-small;
+    height: $btn-size-small;
+    width: $btn-size-small;
+    border-radius: $btn-size-small;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0px 2px $focus-color;
+  }
+
+  &.is-active,
+  &:hover,
+  &:focus {
+    background-color: $btn-bg-hover;
+    border-color: $btn-hover-border-color;
+    color: $btn-hover-color;
+  }
+
+  &:after {
+    position: absolute;
+    display: inline-block;
+    content: "";
+    width: $btn-arrowsize;
+    height: $btn-arrowsize;
+    top: 50%;
+    left: 50%;
+    margin-top: -($btn-arrowsize * .6);
+    -webkit-transform: rotateZ(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotateZ(-45deg);
+
+    @media only screen and (max-width: 600px) {
+      width: $btn-arrowsize-small;
+      height: $btn-arrowsize-small;
+      margin-top: -($btn-arrowsize-small * .5);
+    }
+  }
+
+  &.prev {
+    left: 20px;
+
+    &:after {
+      margin-left: -($btn-arrowsize * .3);
+      border-top: 2px solid;
+      border-left: 2px solid;
+
+      @media only screen and (max-width: 600px) {
+        margin-left: -($btn-arrowsize-small * .3);
+      }
+    }
+  }
+
+  &.next {
+    right: 20px;
+
+    &:after {
+      margin-left: -($btn-arrowsize * .8);
+      border-bottom: 2px solid;
+      border-right: 2px solid;
+
+      @media only screen and (max-width: 600px) {
+        margin-left: -($btn-arrowsize-small * .7);
+      }
+    }
+  }
+}
+
+// Close button
+.lw_fsg_close {
+  cursor: pointer; // mobile Safari does not generate click events without this
+  z-index: 5; // above nav arrows
+  display: block;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: calc(25px + 3px + 3px);
+  height: calc(25px + 3px + 3px);
+  border-radius: 50%; // for focus state
+  overflow: hidden;
+  outline: none;
+  border: none;
+  background: none;
+  -webkit-appearance: none;
+
+  &:focus-visible {
+    box-shadow: 0 0 0px 2px $focus-color;
+  }
+
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    margin-top: -1.5px;
+    height: 3px;
+    width: calc(100% - 3px - 3px);
+    top: 50%;
+    left: 3px;
+    background-color: $close-btn-color;
+    transition: all .25s ease-in-out;
+  }
+
+  &:before {
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+  &:after {
+    -webkit-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+  }
+
+  &:hover {
+    &:before, &:after {
+      background-color: $close-btn-color-hover;
+    }
+  }
+
+  @media only screen and (max-width: 800px) {
+    top: 22px;
+    right: 22px;
+  }
+}
+
+
+// Loading icon
+// Copyright (c) 2017 by Kevin (http://codepen.io/I-is-kevin/pen/jqejXj)
+.lw_fsg_loader {
+  position: absolute;
+  top: 50%;
+  left: 48%;
+  opacity: 0;
+
+  &.is-visible { // only display loaded while image is loading
+    opacity: 1;
+  }
+}
+
+.lw_fsg_loader_line {
+  animation: expand 1s ease-in-out infinite;
+  border-radius: 10px;
+  display: inline-block;
+  -webkit-transform-origin: center center;
+  -ms-transform-origin: center center;
+          transform-origin: center center;
+  margin: 0 3px;
+  width: 3px;
+  height: 25px;
+}
+
+.lw_fsg_loader_line:nth-child(1) {
+  background: $loader-color-1;
+}
+
+.lw_fsg_loader_line:nth-child(2) {
+  animation-delay: 180ms;
+  background: $loader-color-2;
+}
+
+.lw_fsg_loader_line:nth-child(3) {
+  animation-delay: 360ms;
+  background: $loader-color-3;
+}
+
+.lw_fsg_loader_line:nth-child(4) {
+  animation-delay: 540ms;
+  background: $loader-color-4;
+}
+
+// Loading animation
+@keyframes expand {
+  0% {
+    -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+            transform: scale(1);
+  }
+  25% {
+    -webkit-transform: scale(2);
+        -ms-transform: scale(2);
+            transform: scale(2);
+  }
+}
