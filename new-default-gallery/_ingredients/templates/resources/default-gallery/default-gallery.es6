@@ -45,8 +45,8 @@
           thumb_width: self.options.width, 
           thumb_height: 'auto',
           clean_markup: true,
-          format_widget: '<section class="lw_fsg" tabindex="-1" style="pointer-events:none; visibility: hidden; opacity:0; z-index: -9999;" aria-roledescription="carousel"><div class="lw_fsg_inner"><h4 class="lw_fsg_title">{title}</h4><div class="lw_fsg_nav"><button class="lw_fsg_nav_btn prev" title="Previous image" aria-label="previous image" aria-controls="carousel-{id}">Prev »</button><button class="lw_fsg_nav_btn next" title="Next image" aria-label="next image" aria-controls="carousel-{id}">Next »</button></div><ul class="lw_fsg_images" id="carousel-{id}"  aria-live="polite">{widget}</ul></div><button class="lw_fsg_close" title="Close gallery" aria-label="close gallery"></button><div class="lw_fsg_loader is-visible"><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div></div></section>',
-          format: '<li class="lw_fsg_image" role="group" aria-roledescription="slide"><figure>{image}<figcaption>{<div class="lw_fsg_caption">|caption|</div>}{<div class="lw_fsg_caption">|credit|</div>}</figcaption></figure></li>',
+          format_widget: '<section class="lw_fsg" tabindex="-1" style="pointer-events:none; visibility: hidden; opacity:0; z-index: -9999;" aria-roledescription="carousel"><div class="lw_fsg_inner"><h4 class="lw_fsg_title">{title}</h4><div class="lw_fsg_nav"><button class="lw_fsg_nav_btn prev" title="Previous image" aria-label="previous image" aria-controls="carousel-{id}">Prev »</button><button class="lw_fsg_nav_btn next" title="Next image" aria-label="next image" aria-controls="carousel-{id}">Next »</button></div><ul class="lw_fsg_images" id="carousel-{id}" aria-live="polite" aria-label="{title_clean}">{widget}</ul></div><button class="lw_fsg_close" title="Close gallery" aria-label="close gallery"></button><div class="lw_fsg_loader is-visible"><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div></div></section>',
+          format: '<li class="lw_fsg_image" role="group" aria-roledescription="slide" aria-label="{alt}"><figure>{image}<figcaption>{<div class="lw_fsg_caption">|caption|</div>}{<div class="lw_fsg_caption">|credit|</div>}</figcaption></figure></li>',
         };
         const widget = livewhale.lib.getWidgetMarkup(null, 'galleries_inline', args);
         const url = livewhale.liveurl_dir + '/widget/preview/?syntax=' + encodeURIComponent(widget);
@@ -56,6 +56,20 @@
 
           // Insert the gallery markup into the page 
           $(gallery).attr('id', 'fsg_'+self.id).appendTo($body);
+
+          // Store variables for gallery images
+          const $thisGallery = $('#fsg_'+self.id);
+          const $allImages = $thisGallery.find('.lw_fsg_image');
+          const $prevArrow = $thisGallery.find('.fsgallery-nav').find('.prev');
+          const $nextArrow = $thisGallery.find('.fsgallery-nav').find('.next');
+          let   $subImage; 
+
+          // Add aria-labels to each slide
+          $allImages.each(function(i) {
+            const $thisImage = $(this);
+            const alt = $thisImage.attr('aria-label');
+            $thisImage.attr('aria-label', `Slide ${i+1} of ${$allImages.length}: ${alt}`);
+          });
 
           // Open the fullscreen gallery 
           self._open();
@@ -72,13 +86,6 @@
           $body.on('click', '#fsg_'+self.id+' .lw_fsg_close', function(){
               self._close();
           });
-
-          // Store variables for changing the image
-          const $thisGallery = $('#fsg_'+self.id);
-          const $allImages = $thisGallery.find('.lw_fsg_image');
-          const $prevArrow = $thisGallery.find('.fsgallery-nav').find('.prev');
-          const $nextArrow = $thisGallery.find('.fsgallery-nav').find('.next');
-          let   $subImage; 
 
           // Change image on nav click
           $body.on('click', '#fsg_'+self.id+' .lw_fsg_nav_btn', function(e) {
