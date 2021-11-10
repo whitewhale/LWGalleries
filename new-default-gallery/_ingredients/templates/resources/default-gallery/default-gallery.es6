@@ -10,7 +10,6 @@
   const defaultThumbWidth = 420;  // pixels
   const defaultThumbHeight = 420;
   const defaultImageWidth = 800;
-  const defaultAutoplaySpeed = 4; // seconds
 
   // This plugin creates a fullscreen gallery with custom options
   $.widget('lw.lw_fsg', {
@@ -18,10 +17,8 @@
     // Default options
     options: {
       gallery_id: false,        // a LiveWhale gallery id must be passed for the gallery to work
-      width: defaultImageWidth, // a number denoting the image width in pixels
       title: false,             // a text string or jQuery selector containing the gallery title
-      autoplay: false,          // set to true or set a number of seconds
-      pauseOnHover: true,       // pause autoplay when hovering over nav buttons
+      width: defaultImageWidth, // a number denoting the image width in pixels
       hide: false,              // hide the image container after initializing the gallery.
       destroyOnClose: false     // remove the fullscreen gallery on close
     },
@@ -71,21 +68,10 @@
         });
       }
 
-      // Check if autoplay is enabled and set the delay time
-      if ( self.options.autoplay ) { 
-        var delay = ( self.options.autoplay != true && self.options.autoplay >= 1 && self.options.autoplay < 4000) ? self.options.autoplay*1000 : defaultAutoplaySpeed*1000;
-        self.delay = delay; // store the autoplay delay as a global variable
-      }
-
       // Hide original image container if hide is set to "true"
       if ( self.options.hide ) {
         self.element.hide();
       }
-
-      // Set the options
-      self._setOptions({
-        'title': self.options.title
-      });
 
       // Set the trigger element
       self.triggerEl = $(self.element);  
@@ -146,43 +132,6 @@
       });
 
 
-      // Stop autoplay when gallery nav is focused
-      if ( self.options.autoplay ) {
-
-        // Stop autoplay if enabled
-        $body.on('focus', '#fsg_'+self.id+' .lw_fsg_nav_btn', function() {
-          if ( self.autoplay ) {
-            clearInterval(self.globalFGTimer);
-            self.autoplay = false;
-          }
-        });
-      }
-
-
-      // Optionally pause autoplay when gallery nav is hovered
-      if ( self.options.pauseOnHover && self.options.autoplay ) {
-
-        // Stop autoplay if enabled
-        $body.on('mouseenter', '#fsg_'+self.id+' .lw_fsg_nav_btn', function() {
-          if ( self.autoplay ) {
-            clearInterval(self.globalFGTimer);
-            self.autoplay = false;
-          }
-        });
-
-        // Restart autoplay 
-        $body.on('mouseleave', '#fsg_'+self.id+' .lw_fsg_nav_btn', function() {
-          // if autoplay isn't already running and autoplay delay is set
-          if ( !self.autoplay && self.delay ) { 
-            self.autoplay = true;
-            self.globalFGTimer = setInterval(function(){
-               // prevent slideshow stopping when triggering click
-              $('#fsg_'+self.id).find('.lw_fsg_nav').find('.next').trigger('click');
-            }, self.delay );
-          }
-        });
-      }
-
       // Close fullscreen modal when close button is clicked
       $body.on('click', '#fsg_'+self.id+' .lw_fsg_close', function(){
           self._close();
@@ -209,12 +158,6 @@
       var self = this;
       $('#fsg_'+self.id).remove(); // remove this fullscreen gallery
       self.element.show(); // show original image container
-
-      // Stop autoplay if enabled
-      if ( self.autoplay ) {
-        clearInterval(self.globalFGTimer);
-        self.autoplay = false;
-      }
     },
 
 
@@ -249,16 +192,6 @@
         $firstImage.imagesLoaded().done(function() {
           $fsg.find('.lw_fsg_inner').addClass('is-visible');
           $fsg.find('.lw_fsg_loader').removeClass('is-visible');
-
-          // Start autoplay if enabled
-          if ( self.delay ) {
-
-            self.autoplay = true;  // global variable signals that autoplay is running
-
-            self.globalFGTimer = setInterval(function(){ // global variable for the autoplay timer
-              $('#fsg_'+self.id).find('.lw_fsg_nav').find('.next').trigger('click'); // prevent slideshow stopping when triggering click
-            }, self.delay );
-          }
         }).addClass('lw_fsg_selected').attr('aria-hidden', 'false');
       }
 
@@ -281,12 +214,6 @@
       // Hide the gallery modal
       var $fsg = $('#fsg_'+self.id).removeClass('lw_fsg_open').attr('aria-hidden', 'true').attr('tabindex','-1');
 
-      // Stop autoplay if enabled
-      if ( self.autoplay ) {
-        clearInterval(self.globalFGTimer);
-        self.autoplay = false;
-      }
-
       // Shrink the current image
       var $selectedImage = $fsg.find('.lw_fsg_selected').addClass('is-closed');
 
@@ -301,25 +228,6 @@
 
       // Trigger an event when the gallery is closed
       self._trigger( 'close' );
-    },
-
-
-    // Respond to certain changes made to the option method
-    _setOption: function ( key, value ) {
-      // var self = this;
-      // var fnMap = {
-      //   'title': function () {
-      //     if ( value ) {
-      //       self._setTitle(value);
-      //     }
-      //   }
-      // };
-
-      // self._super(key, value);
-
-      // if (key in fnMap) {
-      //   fnMap[key]();
-      // }
     }
   });
 
@@ -363,8 +271,6 @@
         gallery_id: $gallery.data('gallery-id'), 
         title: $gallery.data('gallery-title'),   
         width: $gallery.data('gallery-width'),   
-        autoplay: $gallery.data('gallery-autoplay'),     
-        pauseOnHover: $gallery.data('gallery-autoplay-pause'),  
       });
     });
 
