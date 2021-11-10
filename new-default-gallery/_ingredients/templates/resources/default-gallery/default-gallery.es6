@@ -6,21 +6,20 @@
 
 ;(function($) {
 
-  // set the default image sizes here
-  const defaultThumbWidth = 420;  // pixels
+  // set the default image sizes here in pixels
+  const defaultThumbWidth = 420;
   const defaultThumbHeight = 420;
   const defaultImageWidth = 800;
 
-  // This plugin creates a fullscreen gallery with custom options
+
+  // Begin fullscreen gallery plugin
   $.widget('lw.lw_fsg', {
 
     // Default options
     options: {
       gallery_id: false,        // a LiveWhale gallery id must be passed for the gallery to work
-      title: false,             // a text string or jQuery selector containing the gallery title
       width: defaultImageWidth, // a number denoting the image width in pixels
-      hide: false,              // hide the image container after initializing the gallery.
-      destroyOnClose: false     // remove the fullscreen gallery on close
+      destroyOnClose: false     // remove the fullscreen gallery HTML on close
     },
 
     // Initialize the fullscreen gallery. _create will automatically run the first time this widget is called.
@@ -33,19 +32,20 @@
       // Assign a random id and store as a global variable
       self.id = Math.floor(1000 + Math.random() * 9000);
 
-      // Escape function if no gallery id is passed
+      // If no gallery id is passed, escape the function
       if ( !self.options.gallery_id ) {
         return;
       }
 
-      // Plug the gallery id into inline gallery widget args
+      // Plug the gallery id into an inline gallery widget
+      // the {image} is set to the thumb_width and thumb_height 
       if ( self.options.gallery_id ) {
         const args = {
           id: [{value: self.options.gallery_id}],
-          thumb_width: self.options.width, // {image} gets the thumb_width and thumb_height
+          thumb_width: self.options.width, 
           thumb_height: 'auto',
           clean_markup: true,
-          format_widget: '<section class="lw_fsg" tabindex="-1" style="pointer-events:none; visibility: hidden; opacity:0; z-index: -9999;" aria-roledescription="carousel"><div class="lw_fsg_inner"><div class="lw_fsg_nav"><button class="lw_fsg_nav_btn prev" title="Previous image" aria-label="previous image" aria-controls="carousel-{id}">Prev »</button><button class="lw_fsg_nav_btn next" title="Next image" aria-label="next image" aria-controls="carousel-{id}">Next »</button></div><ul class="lw_fsg_images" id="carousel-{id}">{widget}</ul></div><button class="lw_fsg_close" title="Close gallery" aria-label="close gallery"></button><div class="lw_fsg_loader is-visible"><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div></div></section>',
+          format_widget: '<section class="lw_fsg" tabindex="-1" style="pointer-events:none; visibility: hidden; opacity:0; z-index: -9999;" aria-roledescription="carousel"><div class="lw_fsg_inner"><h4 class="lw_fsg_title">{title}</h4><div class="lw_fsg_nav"><button class="lw_fsg_nav_btn prev" title="Previous image" aria-label="previous image" aria-controls="carousel-{id}">Prev »</button><button class="lw_fsg_nav_btn next" title="Next image" aria-label="next image" aria-controls="carousel-{id}">Next »</button></div><ul class="lw_fsg_images" id="carousel-{id}">{widget}</ul></div><button class="lw_fsg_close" title="Close gallery" aria-label="close gallery"></button><div class="lw_fsg_loader is-visible"><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div></div></section>',
           format: '<li class="lw_fsg_image" role="group" aria-roledescription="slide"><figure>{image}<figcaption>{<div class="lw_fsg_caption">|caption|</div>}{<div class="lw_fsg_caption">|credit|</div>}</figcaption></figure></li>',
         };
         const widget = livewhale.lib.getWidgetMarkup(null, 'galleries_inline', args);
@@ -57,20 +57,9 @@
           // Insert the gallery markup into the page 
           $(gallery).attr('id', 'fsg_'+self.id).appendTo($body);
 
-          // Add the title If title is passed as a jQuery object, transform it to a string first
-          if ( self.options.title ) {
-            var titleString = ( typeof self.options.title  === 'object' ) ? $.trim(self.options.title .text()) : $.trim(self.options.title );
-             $('#fsg_'+self.id).find('.lw_fsg_inner').prepend(`<h4 class="lw_fsg_title">${titleString}</h4>`);
-          }
-
-          // Open the fullscreen gallery upon creation
+          // Open the fullscreen gallery 
           self._open();
         });
-      }
-
-      // Hide original image container if hide is set to "true"
-      if ( self.options.hide ) {
-        self.element.hide();
       }
 
       // Set the trigger element
@@ -96,10 +85,9 @@
       $body.on('click', '#fsg_'+self.id+' .lw_fsg_nav_btn', function(e) {
 
         e.preventDefault();
-
-        var $this = $(this); // 'this' is now the clicked nav element
+        var $this = $(this);
         var $allImages = $('#fsg_'+self.id).find('.lw_fsg_image');
-        var $subImage;
+        var $subImage; // the new substitute image
 
         if ( $this.hasClass('prev')) {
           
@@ -121,11 +109,11 @@
           self._trigger( 'nextImage' );
         }
 
-        // Remove selected class from all images then add it to the substitute image
+        // Replace selected image with the substitute image
         $allImages.removeClass('lw_fsg_selected').attr('aria-hidden', 'true');
         $subImage.addClass('lw_fsg_selected').attr('aria-hidden', 'false');
 
-        // Trigger an event when the image changes either direction
+        // Trigger an event when the image changes 
         self._trigger( 'changeImage' );
 
         return true;
@@ -137,14 +125,15 @@
           self._close();
       });
 
-      // Close fullscreen modal when escape key is pressed
+      // Respond to keypresses
       $body.keydown(function(e) {
 
-        // If this gallery is open
+
+
+        // If this gallery is open and escape key is pressed
+        // close the fullscreen modal 
         if ( $('#fsg_'+self.id).hasClass('lw_fsg_open') && $body.hasClass('lw_fsg_open') ) {
           var keyCode = e.which;
-
-          // If escape key is pressed
           if(keyCode == 27) { 
             self._close();
           }
@@ -153,15 +142,15 @@
     },
 
 
-    // Destroy the fullscreen gallery and clean up modifications made to the DOM
+    // Removes fullscreen gallery from the DOM
     destroy: function () {
       var self = this;
-      $('#fsg_'+self.id).remove(); // remove this fullscreen gallery
-      self.element.show(); // show original image container
+      $('#fsg_'+self.id).remove();
     },
 
 
-    // Opens the fullscreen gallery modal. If an image is passed it will be displayed first (optional).
+    // Opens the fullscreen gallery modal 
+    // if an image is passed it is displayed first
     _open: function( $image ) {
 
       var self = this;
@@ -182,9 +171,11 @@
 
         // If an image is passed, show this image first
         if ( $image && $image.length ) {
-          var imageName = $image.attr('src').substr($image.attr('src').lastIndexOf('/') + 1); // extract the image id and name (when widget is paginated the .rev extension is removed)
+          // extract this image id and name 
+          var imageName = $image.attr('src').substr($image.attr('src').lastIndexOf('/') + 1); 
           if ( imageName.length ) {
-            $firstImage = $allImages.find('img[src*="'+imageName+'"]').parent('.lw_fsg_image'); // find this image in our gallery
+            // find this image in our gallery
+            $firstImage = $allImages.find('img[src*="'+imageName+'"]').parent('.lw_fsg_image'); 
           }
         }
 
@@ -195,17 +186,17 @@
         }).addClass('lw_fsg_selected').attr('aria-hidden', 'false');
       }
 
-      // Trigger an event when the gallery is opened
+      // Trigger an event when the gallery opens
       self._trigger( 'open' );
     },
 
 
-    // Close the fullscreen gallery
+    // Closes the fullscreen modal
     _close: function( ) {
 
       var self = this;
 
-      // Remove body class to allow other galleries to open
+      // Remove body class, allows other galleries to open
       $('body').removeClass('lw_fsg_open');
 
       // Move focus back to the gallery trigger
@@ -217,60 +208,43 @@
       // Shrink the current image
       var $selectedImage = $fsg.find('.lw_fsg_selected').addClass('is-closed');
 
-      // Then hide the overlay and remove image class
+      // Then hide the overlay and reset selected image
       $fsg.find('lw_fsg_inner').removeClass('is-visible');
       $selectedImage.removeClass('is-closed lw_fsg_selected').attr('aria-hidden', 'true');
 
-      // Remove overlay from the DOM if destroyOnClose is "true"
+      // If destroyOnClose is true, remove gallery from the DOM
       if ( self.options.destroyOnClose ) {
         self.destroy();
       }
 
-      // Trigger an event when the gallery is closed
+      // Trigger an event when the gallery closes
       self._trigger( 'close' );
     }
   });
+  // End fullscreen gallery plugin
 
 
-
-  // This function loads the gallery thumbnail image from encoded HTML
-  $.fn.loadThumb = function() {
-    this.each(function(){
-      const $thumb = $(this);
-      const encodedHTML = $thumb.text();
-      if ( encodedHTML ) {
-        const $picture = $(encodedHTML);
-        $thumb.empty().append($picture);
-      }
-    });
-    return true;
-  };
-
-
-
-
-  // Initialize each gallery on the page
+  // Now, for each lw_gallery
+  // load the preview thumbnail
+  // set up the fullscreen gallery to load/open on click
   $('.lw_gallery').each(function(){
 
     const $gallery = $(this);
     const $galleryPreview = $gallery.find('.lw_gallery_preview');
 
-    // Load the first gallery thumb inside the preview container
+    // Load the first thumbnail image initially
     const $galleryPreviewImg = $gallery.find('.lw_gallery_thumbs').find('.lw_gallery_thumb').first().clone();
-    $galleryPreviewImg.appendTo($galleryPreview).loadThumb();
+    const encodedHTML = $galleryPreviewImg.text();
+    if ( encodedHTML ) {
+      $galleryPreviewImg.empty().append($(encodedHTML)).appendTo($galleryPreview);
+    }
 
-
-    // Create the fullscreen gallery when any link inside the gallery is clicked
-    $gallery.find('a').one('click', function(e){
-      
+    // Load fullscreen gallery on first click 
+    $galleryPreview.one('click', function(e){
       e.preventDefault();
-
-      // Call the fullscreen gallery create function
-      // Gallery properties are set with data attributes on the .lw_gallery element
       $(this).lw_fsg({
         gallery_id: $gallery.data('gallery-id'), 
-        title: $gallery.data('gallery-title'),   
-        width: $gallery.data('gallery-width'),   
+        width: $gallery.data('gallery-width')
       });
     });
 

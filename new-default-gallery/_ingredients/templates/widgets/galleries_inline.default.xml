@@ -1,18 +1,19 @@
 <widget type="template">
-	<title>Default</title>
+	<title>Default Gallery</title>
 	<args>
+		<!-- LW: the lw_gallery classes and data-gallery attributes are required -->
 		<arg id="thumb_width">420</arg>
 		<arg id="thumb_height">420</arg>
 		<arg id="image_width">1000</arg>
 		<arg id="clean_markup">true</arg>
 		<arg id="format_widget">
-			<div class="lw_gallery" data-gallery-id="{id}" data-gallery-width="{image_width}" data-gallery-title="{title_clean}" data-gallery-autoplay="true" data-gallery-autoplay-pause="true">
+			<div class="lw_gallery" data-gallery-id="{id}" data-gallery-width="{image_width}">
 				<a class="lw_gallery_preview" href="#0" role="button" title="Open gallery" aria-label="Open gallery: {title_clean}">
 					<field content="true">
 						<if var="title"/>
 						<content>
 							<!-- LW: show the gallery title if this is an inline gallery -->
-							<h3 class="lw_gallery_title">{title}</h3>
+							<h3>{title}</h3>
 						</content>
 						<else content="true">
 							<content>

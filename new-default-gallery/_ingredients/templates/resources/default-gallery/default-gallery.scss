@@ -61,7 +61,7 @@ $focus-color: #015fcc;
 	display: block;
 
 
-	// this is a link to open the gallery fullscreen 
+	// this element opens the fullscreen gallery 
 	.lw_gallery_preview { 
     display: block;
 
@@ -70,11 +70,7 @@ $focus-color: #015fcc;
     }
 	}
 
-	.lw_gallery_title {
-
-	}
-
-	// the preview image is the only image loaded initially
+	// the first thumbnail image is the only image loaded initially
 	.lw_gallery_preview .lw_gallery_thumb {
 		position: relative;
 		display: block;
@@ -104,7 +100,7 @@ $focus-color: #015fcc;
 		}
 	}
 
-	// the remaining thumbs are not loaded
+	// the remaining thumbnails are not loaded
 	.lw_gallery_thumbs {
 		display: none;
 	}
