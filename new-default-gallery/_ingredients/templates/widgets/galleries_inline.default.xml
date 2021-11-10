@@ -8,7 +8,7 @@
 		<arg id="clean_markup">true</arg>
 		<arg id="format_widget">
 			<div class="lw_gallery" data-gallery-id="{id}" data-gallery-width="{image_width}">
-				<a class="lw_gallery_preview" href="#0" role="button" title="Open gallery" aria-label="Open gallery: {title_clean}">
+				<a class="lw_gallery_preview" href="#" role="button" title="Open gallery" aria-label="Open gallery: {title_clean}">
 					<field content="true">
 						<if var="title"/>
 						<content>

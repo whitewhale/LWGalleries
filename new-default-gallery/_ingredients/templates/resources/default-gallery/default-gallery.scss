@@ -344,9 +344,8 @@ body.lw_fsg_open {
     box-shadow: 0 0 0px 2px $focus-color;
   }
 
-  &.is-active,
   &:hover,
-  &:focus {
+  &.is-keypress, {
     background-color: $btn-bg-hover;
     border-color: $btn-hover-border-color;
     color: $btn-hover-color;
