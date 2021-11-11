@@ -8,6 +8,7 @@
 
 // Fullscreen overlay
 $background-color: #f7f7f7;
+$background-opacity: 1;
 
 // Fullscreen title
 $title-color: #393430;
@@ -39,18 +40,19 @@ $btn-hover-color:         #fff;
 $btn-bg-hover:            #aaa;
 $btn-hover-border-color:  #fff;
 
+// Close button color
+$close-btn-color: #aaa;
+$close-btn-color-hover: darken(#aaa, 15%);
+
+// A11y colors
+$focus-color: #015fcc;
+
 // Loader icon colors
 $loader-color-1:           #ccc;
 $loader-color-2:           lighten(#aaa, 10%);
 $loader-color-3:           lighten(#aaa, 20%);
 $loader-color-4:           lighten(#aaa, 30%);
 
-// Close button color
-$close-btn-color: #b4b4b4;
-$close-btn-color-hover: darken(#b4b4b4, 15%);
-
-// A11y settings
-$focus-color: #015fcc;
 
 
 
@@ -143,11 +145,11 @@ body.lw_fsg_open {
     outline: none; // removes outline when clicking gallery
   }
 
-  &.lw_fsg_open {
+  &.lw_fsg_open { // !importants are all required here
     pointer-events: all !important; // enable mouse events on gallery
     z-index: 9999 !important;       // place gallery above everything
-    opacity: 1 !important;          // !important overrides inline styles
-    visibility: visible !important;
+    opacity: $background-opacity !important;  
+    visibility: visible !important;   
 
     * {
       visibility: visible;
@@ -157,10 +159,7 @@ body.lw_fsg_open {
 
 // This element fades in once images are loaded
 .lw_fsg_inner {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
+  padding-top: 7vh; // change title position with padding
   opacity: 0;
   -webkit-transition: opacity 0.3s ease;
   transition: opacity 0.3s ease;
@@ -176,7 +175,8 @@ body.lw_fsg_open {
 
 // Title
 .lw_fsg_title {
-  display: block;
+  display: inline-block; // enables clicking outside title to close
+  margin: 0; // top margin must be 0 for opacity setting on fsg modal
   color: $title-color;
   font-size: $title-font-size;
   font-family: $title-font;
@@ -185,19 +185,16 @@ body.lw_fsg_open {
   -moz-osx-font-smoothing: grayscale;
   max-height: 20vh;
 
-  @media only screen and (max-width: 800px) {
-    padding-top: 60px; // make room for close button
-  }
-
   // hide title on small mobile landscape orientation
-  @media only screen and (max-height:650px) {
-    display: none;
-  }
+  // @media only screen and (max-height:650px) {
+    // display: none;
+  // }
 }
 
 .lw_fsg_images {
 	display: block;
 	list-style-type: none;
+  margin: 0;
 	max-height: 80vh;
 }
 
@@ -226,6 +223,10 @@ body.lw_fsg_open {
   }
 
   // Gallery image
+  picture {
+    display: block;
+  }
+
   img {
     display: inline-block;
     margin: 0 auto;
@@ -284,7 +285,7 @@ body.lw_fsg_open {
 
 // Image caption
 .lw_fsg_caption {
-  display: block;
+  display: inline-block;
   max-width: 75%;
   margin: 0 auto;
   padding-top: 25px;
