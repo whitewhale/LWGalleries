@@ -46,7 +46,7 @@
           thumb_height: 'auto',
           clean_markup: true,
           format_widget: '<section class="lw_fsg" tabindex="-1" style="pointer-events:none; visibility: hidden; opacity:0; z-index: -9999;" aria-roledescription="carousel"><div class="lw_fsg_inner"><h4 class="lw_fsg_title">{title}</h4><div class="lw_fsg_nav"><button class="lw_fsg_nav_btn prev" title="Previous image" aria-label="previous image" aria-controls="carousel-{id}">Prev »</button><button class="lw_fsg_nav_btn next" title="Next image" aria-label="next image" aria-controls="carousel-{id}">Next »</button></div><ul class="lw_fsg_images" id="carousel-{id}" aria-live="polite" aria-label="{title_clean}">{widget}</ul></div><button class="lw_fsg_close" title="Close gallery" aria-label="close gallery"></button><div class="lw_fsg_loader is-visible"><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div></div></section>',
-          format: '<li class="lw_fsg_image" role="group" aria-roledescription="slide" aria-label="{alt}"><figure>{image}<figcaption>{<div class="lw_fsg_caption">|caption|</div>}{<div class="lw_fsg_caption">|credit|</div>}</figcaption></figure></li>',
+          format: '<li class="lw_fsg_image" role="group" aria-roledescription="slide" aria-label="{alt}"><figure>{image}<figcaption class="lw_fsg_caption">{<div>|caption|</div>}{<small>|credit|</small>}</figcaption></figure></li>',
         };
         const widget = livewhale.lib.getWidgetMarkup(null, 'galleries_inline', args);
         const url = livewhale.liveurl_dir + '/widget/preview/?syntax=' + encodeURIComponent(widget);
@@ -59,16 +59,20 @@
 
           // Store variables for gallery images
           const $thisGallery = $('#fsg_'+self.id);
-          const $allImages = $thisGallery.find('.lw_fsg_image');
-          const $prevArrow = $thisGallery.find('.fsgallery-nav').find('.prev');
-          const $nextArrow = $thisGallery.find('.fsgallery-nav').find('.next');
-          let   $subImage; 
+          const $title = $thisGallery.find('.lw_fsg_title');
+          const $slides = $thisGallery.find('.lw_fsg_image');
+          const $slideImages = $slides.find('.lw_image').find('img');
+          const $slideCaptions = $slides.find('.lw_fsg_caption');
+          const $arrows = $thisGallery.find('.lw_fsg_nav_btn');
+          const $arrowPrev = $arrows.filter('.prev');
+          const $arrowNext = $arrows.filter('.next');
+          let   $subSlide; 
 
           // Add aria-labels to each slide
-          $allImages.each(function(i) {
-            const $thisImage = $(this);
-            const alt = $thisImage.attr('aria-label');
-            $thisImage.attr('aria-label', `Slide ${i+1} of ${$allImages.length}: ${alt}`);
+          $slides.each(function(i) {
+            const $thisSlide = $(this);
+            const alt = $thisSlide.attr('aria-label');
+            $thisSlide.attr('aria-label', `Slide ${i+1} of ${$slides.length}: ${alt}`);
           });
 
           // Open the fullscreen gallery 
@@ -87,25 +91,36 @@
               self._close();
           });
 
-          // Change image on nav click
+          // Close fullscreen modal when clicking outside the image, arrows and captions in the modal
+          $body.on('click touchstart', function(e) {
+            if ( ( $thisGallery.is(e.target) || $thisGallery.has(e.target).length ) &&
+                 ( !$title.is(e.target) && $title.has(e.target).length === 0 ) &&
+                 ( !$slideImages.is(e.target) && $slideImages.has(e.target).length === 0 ) &&
+                 ( !$slideCaptions.is(e.target) && $slideCaptions.has(e.target).length === 0 ) &&
+                 ( !$arrows.is(e.target) && $arrows.has(e.target).length === 0 ) ) {
+              self._close();
+            }
+          });
+
+          // Change slide on nav click
           $body.on('click', '#fsg_'+self.id+' .lw_fsg_nav_btn', function(e) {
             e.preventDefault();
             const $this = $(this);
 
             if ( $this.hasClass('prev') ) {
-              $subImage = $allImages.filter('.lw_fsg_selected').prev().length < 1 ? $allImages.last() : $allImages.filter('.lw_fsg_selected').prev();
-              self._trigger( 'prevImage' ); // Trigger event: prevImage
+              $subSlide = $slides.filter('.lw_fsg_selected').prev().length < 1 ? $slides.last() : $slides.filter('.lw_fsg_selected').prev();
+              self._trigger( 'prevSlide' ); // Trigger event: prevSlide
             }
 
             if ( $this.hasClass('next') ) {
-              $subImage = $allImages.filter('.lw_fsg_selected').next().length < 1 ? $allImages.first() : $allImages.filter('.lw_fsg_selected').next();
-              self._trigger( 'nextImage' ); // Trigger event: nextImage
+              $subSlide = $slides.filter('.lw_fsg_selected').next().length < 1 ? $slides.first() : $slides.filter('.lw_fsg_selected').next();
+              self._trigger( 'nextSlide' ); // Trigger event: nextSlide
             }
 
-            // Replace selected image with the substitute image
-            $allImages.removeClass('lw_fsg_selected').attr('aria-hidden', 'true');
-            $subImage.addClass('lw_fsg_selected').attr('aria-hidden', 'false');
-            self._trigger( 'changeImage' ); // Trigger event: changeImage
+            // Replace selected slide with the substitute slide
+            $slides.removeClass('lw_fsg_selected').attr('aria-hidden', 'true');
+            $subSlide.addClass('lw_fsg_selected').attr('aria-hidden', 'false');
+            self._trigger( 'changeSlide' ); // Trigger event: changeSlide
 
             return true;
           });
@@ -137,26 +152,26 @@
               if( keyCode == 37 || keyCode == 39 ) {
 
                 if( keyCode == 37 ) { // left
-                  $subImage = $allImages.filter('.lw_fsg_selected').prev().length < 1 ? $allImages.last() : $allImages.filter('.lw_fsg_selected').prev();
-                  self._trigger( 'prevImage' ); // Trigger event: prevImage
-                  $prevArrow.addClass('is-keypress'); // Highlight arrow button
+                  $subSlide = $slides.filter('.lw_fsg_selected').prev().length < 1 ? $slides.last() : $slides.filter('.lw_fsg_selected').prev();
+                  self._trigger( 'prevSlide' ); // Trigger event: prevSlide
+                  $arrowPrev.addClass('is-keypress'); // Highlight arrow button
                   setTimeout(function(){
-                    $prevArrow.removeClass('is-keypress');
+                    $arrowPrev.removeClass('is-keypress');
                   }, 500);
                 }
                 else if( keyCode == 39 ) { // right
-                  $subImage = $allImages.filter('.lw_fsg_selected').next().length < 1 ? $allImages.first() : $allImages.filter('.lw_fsg_selected').next();
-                  self._trigger( 'nextImage' ); // Trigger event: nextImage
-                  $nextArrow.addClass('is-keypress'); // Highlight arrow button
+                  $subSlide = $slides.filter('.lw_fsg_selected').next().length < 1 ? $slides.first() : $slides.filter('.lw_fsg_selected').next();
+                  self._trigger( 'nextSlide' ); // Trigger event: nextSlide
+                  $arrowNext.addClass('is-keypress'); // Highlight arrow button
                   setTimeout(function(){
-                    $nextArrow.removeClass('is-keypress');
+                    $arrowNext.removeClass('is-keypress');
                   }, 500);
                 }
 
                 // Replace selected image with the substitute image
-                $allImages.removeClass('lw_fsg_selected').attr('aria-hidden', 'true');
-                $subImage.addClass('lw_fsg_selected').attr('aria-hidden', 'false');
-                self._trigger( 'changeImage' ); // Trigger event: changeImage
+                $slides.removeClass('lw_fsg_selected').attr('aria-hidden', 'true');
+                $subSlide.addClass('lw_fsg_selected').attr('aria-hidden', 'false');
+                self._trigger( 'changeSlide' ); // Trigger event: changeSlide
               }
             }
           });
@@ -194,11 +209,11 @@
         const imageName = ( $image && $image.length ) ? $image.attr('src').substr($image.attr('src').lastIndexOf('/') + 1) : false; 
 
         // Show this image, otherwise show the first image by default
-        const $allImages = $fsg.find('.lw_fsg_image');
-        const $firstImage = ( imageName && imageName.length ) ? $allImages.find('img[src*="'+imageName+'"]').parent('.lw_fsg_image') : $allImages.first(); 
+        const $slides = $fsg.find('.lw_fsg_image');
+        const $firstSlide = ( imageName && imageName.length ) ? $slides.find('img[src*="'+imageName+'"]').parent('.lw_fsg_image') : $slides.first(); 
 
         // Reveal gallery after the image displayed first has successfully loaded
-        $firstImage.imagesLoaded().done(function() {
+        $firstSlide.imagesLoaded().done(function() {
           $fsg.find('.lw_fsg_inner').addClass('is-visible');
           $fsg.find('.lw_fsg_loader').removeClass('is-visible');
         }).addClass('lw_fsg_selected').attr('aria-hidden', 'false');
@@ -224,11 +239,11 @@
       const $fsg = $('#fsg_'+self.id).removeClass('lw_fsg_open').attr('aria-hidden', 'true').attr('tabindex','-1');
 
       // Shrink the current image
-      const $selectedImage = $fsg.find('.lw_fsg_selected').addClass('is-closed');
+      const $selectedSlide = $fsg.find('.lw_fsg_selected').addClass('is-closed');
 
       // Then hide the overlay and reset selected image
       $fsg.find('lw_fsg_inner').removeClass('is-visible');
-      $selectedImage.removeClass('is-closed lw_fsg_selected').attr('aria-hidden', 'true');
+      $selectedSlide.removeClass('is-closed lw_fsg_selected').attr('aria-hidden', 'true');
 
       // If destroyOnClose is true, remove gallery from the DOM
       if ( self.options.destroyOnClose ) {
