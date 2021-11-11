@@ -73,7 +73,7 @@ $loader-color-4:           lighten(#aaa, 30%);
 	}
 
 	// the first thumbnail image is the only image loaded initially
-	.lw_gallery_preview .lw_gallery_thumb {
+	.lw_gallery_thumb {
 		position: relative;
 		display: block;
     max-width: 100%;
@@ -87,7 +87,7 @@ $loader-color-4:           lighten(#aaa, 30%);
       height: auto; // ensure image fits within container
     }
 
-		&::after {
+		&::after { // stacked image icon
 			z-index: 1;
 			content: '';
 			display: block;
@@ -159,7 +159,7 @@ body.lw_fsg_open {
 
 // This element fades in once images are loaded
 .lw_fsg_inner {
-  padding-top: 7vh; // change title position with padding
+  padding-top: 5vh; // change title position with padding
   opacity: 0;
   -webkit-transition: opacity 0.3s ease;
   transition: opacity 0.3s ease;
@@ -218,7 +218,7 @@ body.lw_fsg_open {
   @media only screen and (max-height:650px) {
     padding-bottom: 0;
   }
-  @media only screen and (max-height:800px) {
+  @media only screen and (max-height:1000px) {
     max-height: 70vh;
   }
 
