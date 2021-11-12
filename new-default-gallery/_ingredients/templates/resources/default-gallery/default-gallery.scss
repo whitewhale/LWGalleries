@@ -256,7 +256,8 @@ body.lw_gallery_open {
     -webkit-transition: opacity 0.6s ease; // image fade out
     transition: opacity 0.6s ease;
 
-    .lw_gallery_slide_caption {
+    .lw_gallery_slide_caption,
+    .lw_gallery_slide_caption * {
       visibility: hidden !important; // prevents kb/sr access on caption links
     }
   }
