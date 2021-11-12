@@ -1,35 +1,73 @@
 <widget type="template">
 	<title>Default Gallery</title>
 	<args>
-		<!-- LW: the lw_gallery classes and data-gallery attributes are required -->
 		<arg id="thumb_width">420</arg>
 		<arg id="thumb_height">420</arg>
 		<arg id="image_width">1000</arg>
 		<arg id="clean_markup">true</arg>
 		<arg id="format_widget">
-			<div class="lw_gallery" data-gallery-id="{id}" data-gallery-width="{image_width}">
-				<a class="lw_gallery_preview" href="#" role="button" title="Open gallery" aria-label="Open gallery: {title_clean}">
-					<field content="true">
-						<if var="title"/>
+
+			<!-- LW: all lw_gallery classes are required -->
+			<div class="lw_gallery">
+				<field content="true">
+					<if var="title"/>
+					<content>
+
+						<!-- LW: show the gallery title if this is an inline gallery -->
+						<h3>{title}</h3>
+					</content>
+					<else content="true">
 						<content>
-							<!-- LW: show the gallery title if this is an inline gallery -->
-							<h3>{title}</h3>
+
+							<!-- LW: otherwise add an a11y title for details page galleries  -->
+							<h3 class="lw_sr_only">Open gallery</h3>
 						</content>
-						<else content="true">
-							<content>
-								<!-- LW: otherwise add an a11y title for details page galleries  -->
-								<h3 class="lw_sr_only">View gallery</h3>
-							</content>
-						</else>
-					</field>
-				</a>
-				<div class="lw_gallery_thumbs">
-					{widget}
+					</else>
+				</field>
+				<div class="lw_gallery_thumb">
+
+					<!-- TO DO: Replace this <picture> with {gallery_thumb} -->
+					<p>(this image is just a placeholder until we have gallery_thumb)</p>
+					<picture class="lw_image lw_image6">	<source type="image/webp" srcset="/live/image/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.webp 1x, /live/image/scale/2x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.webp 2x, /live/image/scale/3x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.webp 3x">	<source type="image/jpeg" srcset="/live/image/scale/2x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.jpg 2x, /live/image/scale/3x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.jpg 3x">	<img src="/live/image/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.jpg" width="420" height="420" alt="" srcset="/live/image/scale/2x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.jpg 2x, /live/image/scale/3x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.jpg 3x" data-max-w="3200" data-max-h="2125" loading="lazy"></picture>
+
 				</div>
+				<section class="lw_gallery_modal" aria-roledescription="carousel" aria-hidden="true" tabindex="-1">
+				    <div class="lw_gallery_modal_inner">
+				        <h4 class="lw_gallery_title">{title}</h4>
+				        <div class="lw_gallery_nav">
+				        	<button class="lw_gallery_nav_btn prev" title="Previous image" aria-label="previous image" aria-controls="carousel-{id}">Prev »</button>
+				        	<button class="lw_gallery_nav_btn next" title="Next image" aria-label="next image" aria-controls="carousel-{id}">Next »</button>
+				        </div>
+				        <ul id="carousel-{id}" class="lw_gallery_slides" aria-live="polite" aria-label="{title_clean}">
+				        	{widget}
+				        </ul>
+				    </div>
+				    <button class="lw_gallery_close" title="Close gallery" aria-label="close gallery"></button>
+				    <div class="lw_gallery_loader is-visible">
+				        <div class="lw_gallery_loader_line"></div>
+				        <div class="lw_gallery_loader_line"></div>
+				        <div class="lw_gallery_loader_line"></div>
+				        <div class="lw_gallery_loader_line"></div>
+				    </div>
+				</section>
 			</div>
+			
 		</arg>
 		<arg id="format">
-			<div class="lw_gallery_thumb" aria-hidden="true"><field var="image" cast="encoded"/></div>
+			<li class="lw_gallery_slide" role="group" aria-roledescription="slide" aria-label="{alt}">
+				<figure>
+
+					<!-- TO DO: Replace this with <field var="gallery_image" cast="encoded"/> -->
+					<div class="lw_gallery_slide_image">
+						<field var="image" cast="encoded"/>
+					</div>
+
+					<figcaption class="lw_gallery_slide_caption">
+						{<div>|caption|</div>}
+						{<small>|credit|</small>}
+					</figcaption>
+				</figure>
+			</li>
 		</arg>
 		<arg id="include_javascript">/_ingredients/templates/resources/default-gallery/default-gallery.js</arg>
 		<arg id="include_stylesheet">/_ingredients/templates/resources/default-gallery/default-gallery.css</arg>

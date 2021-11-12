@@ -6,186 +6,161 @@
 
 ;(function($) {
 
-  // Set the default image sizes here in pixels
-  const defaultThumbWidth = 420;
-  const defaultThumbHeight = 420;
-  const defaultImageWidth = 800; // height is always auto
+  // Begin fullscreen gallery modal plugin
+  $.widget('lw.lw_gallery_modal', {
 
-
-  // Begin fullscreen gallery plugin
-  $.widget('lw.lw_fsg', {
-
-    // Fullscreen gallery options
+    // Options
     options: {
-      gallery_id: false,        // number, a LiveWhale gallery id must be provided
-      width: defaultImageWidth, // number, the fullscreen gallery image width in pixels
-      destroyOnClose: false     // boolean, removes the gallery from the DOM on close
+      modal_id: false,      // number, an id must be passed
+      destroyOnClose: false   // boolean, removes the gallery from the DOM on close
     },
 
-    // Initialize the fullscreen gallery
-    // _create will automatically run the first time this widget is called.
+    // Initialize the fullscreen gallery modal
+    // _create will automatically run the first time this widget is called
     _create: function() {
 
       const self = this; 
       const $body = $('body');
 
-      // Assign a random id and store as a global variable
-      self.id = Math.floor(1000 + Math.random() * 9000);
+      // Add global variable for the id
+      self.id = self.options.modal_id;
 
-      // If no gallery id is passed, escape the function
-      if ( !self.options.gallery_id ) {
-        return;
-      }
+      // Store other variables for this function
+      const $thisModal = $(`#lw_modal_${self.id}`);
+      const $title = $thisModal.find('.lw_gallery_title');
+      const $slides = $thisModal.find('.lw_gallery_slide');
+      const $slideImages = $slides.find('.lw_gallery_slide_image');
+      const $slideCaptions = $slides.find('.lw_gallery_slide_caption');
+      const $arrows = $thisModal.find('.lw_gallery_nav_btn');
+      const $arrowPrev = $arrows.filter('.prev');
+      const $arrowNext = $arrows.filter('.next');
+      let   $subSlide; 
 
-      // Plug the gallery id into an inline gallery widget
-      // {image} receives the thumb_width and thumb_height 
-      if ( self.options.gallery_id ) {
-        const args = {
-          id: [{value: self.options.gallery_id}],
-          thumb_width: self.options.width, 
-          thumb_height: 'auto',
-          clean_markup: true,
-          format_widget: '<section class="lw_fsg" tabindex="-1" style="pointer-events:none; visibility: hidden; opacity:0; z-index: -9999;" aria-roledescription="carousel"><div class="lw_fsg_inner"><h4 class="lw_fsg_title">{title}</h4><div class="lw_fsg_nav"><button class="lw_fsg_nav_btn prev" title="Previous image" aria-label="previous image" aria-controls="carousel-{id}">Prev »</button><button class="lw_fsg_nav_btn next" title="Next image" aria-label="next image" aria-controls="carousel-{id}">Next »</button></div><ul class="lw_fsg_images" id="carousel-{id}" aria-live="polite" aria-label="{title_clean}">{widget}</ul></div><button class="lw_fsg_close" title="Close gallery" aria-label="close gallery"></button><div class="lw_fsg_loader is-visible"><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div><div class="lw_fsg_loader-line"></div></div></section>',
-          format: '<li class="lw_fsg_image" role="group" aria-roledescription="slide" aria-label="{alt}"><figure>{image}<figcaption class="lw_fsg_caption">{<div>|caption|</div>}{<small>|credit|</small>}</figcaption></figure></li>',
-        };
-        const widget = livewhale.lib.getWidgetMarkup(null, 'galleries_inline', args);
-        const url = livewhale.liveurl_dir + '/widget/preview/?syntax=' + encodeURIComponent(widget);
+      // For each slide
+      $slides.each(function(i) {
+        const $thisSlide = $(this);
 
-        // Load the new inline gallery from the server
-        $.get(url, function(gallery) {
+        // Add slide count to each aria-label
+        const alt = $thisSlide.attr('aria-label');
+        $thisSlide.attr('aria-label', `Slide ${i+1} of ${$slides.length}: ${alt}`);
 
-          // Insert the gallery markup into the page 
-          $(gallery).attr('id', 'fsg_'+self.id).appendTo($body);
+        // Load the full-size gallery image for each slide
+        const $thisImage = $thisSlide.find('.lw_gallery_slide_image');
+        const encodedHTML =  $thisImage.text();
+        if ( encodedHTML ) {
+          $thisImage.empty().append($(encodedHTML)); // decode the image
+        }
+      });
 
-          // Store variables for gallery images
-          const $thisGallery = $('#fsg_'+self.id);
-          const $title = $thisGallery.find('.lw_fsg_title');
-          const $slides = $thisGallery.find('.lw_fsg_image');
-          const $slideImages = $slides.find('.lw_image').find('img');
-          const $slideCaptions = $slides.find('.lw_fsg_caption');
-          const $arrows = $thisGallery.find('.lw_fsg_nav_btn');
-          const $arrowPrev = $arrows.filter('.prev');
-          const $arrowNext = $arrows.filter('.next');
-          let   $subSlide; 
 
-          // Add aria-labels to each slide
-          $slides.each(function(i) {
-            const $thisSlide = $(this);
-            const alt = $thisSlide.attr('aria-label');
-            $thisSlide.attr('aria-label', `Slide ${i+1} of ${$slides.length}: ${alt}`);
-          });
+      // Open the fullscreen gallery 
+      self._open();
 
-          // Open the fullscreen gallery 
-          self._open();
+      // The trigger element is the jQuery object which called the plugin
+      self.triggerEl = $(self.element);  
 
-          // The trigger element is the jQuery object which called the plugin
-          self.triggerEl = $(self.element);  
+      // Open the fullscreen modal when the trigger is clicked
+      self.triggerEl.on('click', function(e){ 
+        self._open();
+      });
 
-          // Open the fullscreen modal when the trigger is clicked
-          self.triggerEl.on('click', function(e){ 
-            self._open();
-          });
+      // Close fullscreen modal when close button is clicked
+      $body.on('click', `#lw_modal_${self.id} .lw_gallery_close`, function(){
+          self._close();
+      });
 
-          // Close fullscreen modal when close button is clicked
-          $body.on('click', '#fsg_'+self.id+' .lw_fsg_close', function(){
-              self._close();
-          });
+      // Close fullscreen modal when clicking outside the image, arrows and captions in the modal
+      $body.on('click touchstart', function(e) {
+        if ( ( $thisModal.is(e.target) || $thisModal.has(e.target).length ) &&
+             ( !$title.is(e.target) && $title.has(e.target).length === 0 ) &&
+             ( !$slideImages.is(e.target) && $slideImages.has(e.target).length === 0 ) &&
+             ( !$slideCaptions.is(e.target) && $slideCaptions.has(e.target).length === 0 ) &&
+             ( !$arrows.is(e.target) && $arrows.has(e.target).length === 0 ) ) {
+          self._close();
+        }
+      });
 
-          // Close fullscreen modal when clicking outside the image, arrows and captions in the modal
-          $body.on('click touchstart', function(e) {
-            if ( ( $thisGallery.is(e.target) || $thisGallery.has(e.target).length ) &&
-                 ( !$title.is(e.target) && $title.has(e.target).length === 0 ) &&
-                 ( !$slideImages.is(e.target) && $slideImages.has(e.target).length === 0 ) &&
-                 ( !$slideCaptions.is(e.target) && $slideCaptions.has(e.target).length === 0 ) &&
-                 ( !$arrows.is(e.target) && $arrows.has(e.target).length === 0 ) ) {
-              self._close();
-            }
-          });
+      // Change slide on nav click
+      $body.on('click', `#lw_modal_${self.id} .lw_gallery_nav_btn`, function(e) {
+        e.preventDefault();
+        const $this = $(this);
 
-          // Change slide on nav click
-          $body.on('click', '#fsg_'+self.id+' .lw_fsg_nav_btn', function(e) {
+        if ( $this.hasClass('prev') ) {
+          $subSlide = $slides.filter('.lw_gallery_selected').prev().length < 1 ? $slides.last() : $slides.filter('.lw_gallery_selected').prev();
+          self._trigger( 'prevSlide' ); // Trigger event: prevSlide
+        }
+
+        if ( $this.hasClass('next') ) {
+          $subSlide = $slides.filter('.lw_gallery_selected').next().length < 1 ? $slides.first() : $slides.filter('.lw_gallery_selected').next();
+          self._trigger( 'nextSlide' ); // Trigger event: nextSlide
+        }
+
+        // Replace selected slide with the substitute slide
+        $slides.removeClass('lw_gallery_selected').attr('aria-hidden', 'true');
+        $subSlide.addClass('lw_gallery_selected').attr('aria-hidden', 'false');
+        self._trigger( 'changeSlide' ); // Trigger event: changeSlide
+
+        return true;
+      });
+
+      // Respond to keypresses
+      $body.keydown(function(e) {
+
+        const keyCode = e.which;
+
+        // If gallery modal is closed
+        if ( !$body.hasClass('lw_gallery_open') && !$(`#lw_modal_${self.id}`).hasClass('lw_gallery_open')) {
+
+          // If space bar or return are pressed while focusing the trigger element, open this gallery
+          if( self.triggerEl.is(':focus') && ( keyCode == 13 || keyCode == 32 ) ) {
             e.preventDefault();
-            const $this = $(this);
+            self._open();
+          }
+        }
 
-            if ( $this.hasClass('prev') ) {
-              $subSlide = $slides.filter('.lw_fsg_selected').prev().length < 1 ? $slides.last() : $slides.filter('.lw_fsg_selected').prev();
+        // If this gallery is open 
+        if ( $(`#lw_modal_${self.id}`).hasClass('lw_gallery_open') && $body.hasClass('lw_gallery_open') ) {
+
+          // If escape key is pressed, close the fullscreen modal 
+          if(keyCode == 27) { 
+            self._close();
+          }
+
+          // If left or right arrows keys are pressed, change the image
+          if( keyCode == 37 || keyCode == 39 ) {
+
+            if( keyCode == 37 ) { // left
+              $subSlide = $slides.filter('.lw_gallery_selected').prev().length < 1 ? $slides.last() : $slides.filter('.lw_gallery_selected').prev();
               self._trigger( 'prevSlide' ); // Trigger event: prevSlide
+              $arrowPrev.addClass('is-keypress'); // Highlight arrow button
+              setTimeout(function(){
+                $arrowPrev.removeClass('is-keypress');
+              }, 500);
             }
-
-            if ( $this.hasClass('next') ) {
-              $subSlide = $slides.filter('.lw_fsg_selected').next().length < 1 ? $slides.first() : $slides.filter('.lw_fsg_selected').next();
+            else if( keyCode == 39 ) { // right
+              $subSlide = $slides.filter('.lw_gallery_selected').next().length < 1 ? $slides.first() : $slides.filter('.lw_gallery_selected').next();
               self._trigger( 'nextSlide' ); // Trigger event: nextSlide
+              $arrowNext.addClass('is-keypress'); // Highlight arrow button
+              setTimeout(function(){
+                $arrowNext.removeClass('is-keypress');
+              }, 500);
             }
 
-            // Replace selected slide with the substitute slide
-            $slides.removeClass('lw_fsg_selected').attr('aria-hidden', 'true');
-            $subSlide.addClass('lw_fsg_selected').attr('aria-hidden', 'false');
+            // Replace selected image with the substitute image
+            $slides.removeClass('lw_gallery_selected').attr('aria-hidden', 'true');
+            $subSlide.addClass('lw_gallery_selected').attr('aria-hidden', 'false');
             self._trigger( 'changeSlide' ); // Trigger event: changeSlide
+          }
+        }
+      });
 
-            return true;
-          });
-
-          // Respond to keypresses
-          $body.keydown(function(e) {
-
-            const keyCode = e.which;
-
-            // If gallery modal is closed
-            if ( !$body.hasClass('lw_fsg_open') && !$('#fsg_'+self.id).hasClass('lw_fsg_open')) {
-
-              // If space bar or return are pressed while focusing the trigger element, open this gallery
-              if( self.triggerEl.is(':focus') && ( keyCode == 13 || keyCode == 32 ) ) {
-                e.preventDefault();
-                self._open();
-              }
-            }
-
-            // If this gallery is open 
-            if ( $('#fsg_'+self.id).hasClass('lw_fsg_open') && $body.hasClass('lw_fsg_open') ) {
-
-              // If escape key is pressed, close the fullscreen modal 
-              if(keyCode == 27) { 
-                self._close();
-              }
-
-              // If left or right arrows keys are pressed, change the image
-              if( keyCode == 37 || keyCode == 39 ) {
-
-                if( keyCode == 37 ) { // left
-                  $subSlide = $slides.filter('.lw_fsg_selected').prev().length < 1 ? $slides.last() : $slides.filter('.lw_fsg_selected').prev();
-                  self._trigger( 'prevSlide' ); // Trigger event: prevSlide
-                  $arrowPrev.addClass('is-keypress'); // Highlight arrow button
-                  setTimeout(function(){
-                    $arrowPrev.removeClass('is-keypress');
-                  }, 500);
-                }
-                else if( keyCode == 39 ) { // right
-                  $subSlide = $slides.filter('.lw_fsg_selected').next().length < 1 ? $slides.first() : $slides.filter('.lw_fsg_selected').next();
-                  self._trigger( 'nextSlide' ); // Trigger event: nextSlide
-                  $arrowNext.addClass('is-keypress'); // Highlight arrow button
-                  setTimeout(function(){
-                    $arrowNext.removeClass('is-keypress');
-                  }, 500);
-                }
-
-                // Replace selected image with the substitute image
-                $slides.removeClass('lw_fsg_selected').attr('aria-hidden', 'true');
-                $subSlide.addClass('lw_fsg_selected').attr('aria-hidden', 'false');
-                self._trigger( 'changeSlide' ); // Trigger event: changeSlide
-              }
-            }
-          });
-
-
-        });
-      }
     },
 
 
     // Removes fullscreen gallery from the DOM
     destroy: function () {
       const self = this;
-      $('#fsg_'+self.id).remove();
+      $(`#lw_modal_${self.id}`).remove();
     },
 
 
@@ -197,29 +172,30 @@
       const $body = $('body');
 
       // If the gallery is not currently open
-      if ( !$body.hasClass('lw_fsg_open') ) {
+      if ( !$body.hasClass('lw_gallery_open') ) {
 
         // Prevent scroll on body element while gallery is open
-        $body.addClass('lw_fsg_open');
+        $body.addClass('lw_gallery_open');
 
         // Open the gallery
-        const $fsg = $('#fsg_'+self.id).addClass('lw_fsg_open').attr('aria-hidden', 'false').attr('tabindex','0').focus();
+        const $modal = $(`#lw_modal_${self.id}`).addClass('lw_gallery_open').attr('aria-hidden', 'false').attr('tabindex','0').focus();
 
         // If an image is passed, extract the image name 
         const imageName = ( $image && $image.length ) ? $image.attr('src').substr($image.attr('src').lastIndexOf('/') + 1) : false; 
 
         // Show this image, otherwise show the first image by default
-        const $slides = $fsg.find('.lw_fsg_image');
-        const $firstSlide = ( imageName && imageName.length ) ? $slides.find('img[src*="'+imageName+'"]').parent('.lw_fsg_image') : $slides.first(); 
+        const $slides = $modal.find('.lw_gallery_slide');
+        const $firstSlide = ( imageName && imageName.length ) ? $slides.find('img[src*="'+imageName+'"]').parent('.lw_gallery_slide') : $slides.first(); 
 
         // Reveal gallery after the image displayed first has successfully loaded
         $firstSlide.imagesLoaded().done(function() {
-          $fsg.find('.lw_fsg_inner').addClass('is-visible');
-          $fsg.find('.lw_fsg_loader').removeClass('is-visible');
-        }).addClass('lw_fsg_selected').attr('aria-hidden', 'false');
+          $modal.find('.lw_gallery_modal_inner').addClass('is-visible');
+          $modal.find('.lw_gallery_loader').removeClass('is-visible');
+        }).addClass('lw_gallery_selected').attr('aria-hidden', 'false');
       }
 
-      self._trigger( 'open' ); // Trigger event: open
+      // Trigger event: open
+      self._trigger( 'open' ); 
     },
 
 
@@ -228,32 +204,39 @@
 
       const self = this;
       const $body = $('body');
+      const $modal = $(`#lw_modal_${self.id}`);
+      const $selectedSlide = $modal.find('.lw_gallery_selected');
 
-      // Remove body class, allows other galleries to open
-      $body.removeClass('lw_fsg_open');
+      // Shrink the current slide and fade the modal contents
+      $modal.find('.lw_gallery_modal_inner').removeClass('is-visible');
 
-      // Move focus back to the gallery trigger
-      self.triggerEl.focus();
+      // Pause then...
+      setTimeout(function(){
 
-      // Hide the gallery modal
-      const $fsg = $('#fsg_'+self.id).removeClass('lw_fsg_open').attr('aria-hidden', 'true').attr('tabindex','-1');
+        // Fade the modal 
+        $modal.removeClass('lw_gallery_open').attr('aria-hidden', 'true').attr('tabindex','-1');
 
-      // Shrink the current image
-      const $selectedSlide = $fsg.find('.lw_fsg_selected').addClass('is-closed');
+        // Reset slide selection
+        $selectedSlide.removeClass('lw_gallery_selected').attr('aria-hidden', 'true');
 
-      // Then hide the overlay and reset selected image
-      $fsg.find('lw_fsg_inner').removeClass('is-visible');
-      $selectedSlide.removeClass('is-closed lw_fsg_selected').attr('aria-hidden', 'true');
+        // Remove body class, allows other galleries to open
+        $body.removeClass('lw_gallery_open');
 
-      // If destroyOnClose is true, remove gallery from the DOM
-      if ( self.options.destroyOnClose ) {
-        self.destroy();
-      }
+        // Move focus back to the gallery trigger
+        self.triggerEl.focus();
 
-      self._trigger( 'close' ); // Trigger event: close
+        // If destroyOnClose is true, remove gallery from the DOM
+        if ( self.options.destroyOnClose ) {
+          self.destroy();
+        }
+
+        // Trigger event: close
+        self._trigger( 'close' );
+      }, 300);
     }
   });
   // end fullscreen gallery plugin
+
 
 
   // Function to initialize each lw_gallery 
@@ -262,33 +245,52 @@
     $('.lw_gallery').each(function(){
 
       const $gallery = $(this);
-      const $galleryPreview = $gallery.find('.lw_gallery_preview');
 
-      if ( $gallery.attr('data-fsg-initialized') ) {
+      if ( $gallery.attr('data-gallery-initialized') ) {
         
-        // Do nothing if gallery already initialized
+        // do nothing if gallery already initialized
         return true;
 
       } else {
 
-        // Load the first gallery thumbnail image 
-        const $galleryPreviewImg = $gallery.find('.lw_gallery_thumbs').find('.lw_gallery_thumb').first().clone();
-        const encodedHTML = $galleryPreviewImg.text();
-        if ( encodedHTML ) {
-          $galleryPreviewImg.empty().append($(encodedHTML)).appendTo($galleryPreview);
+        // otherwise initialize the gallery
+        const $galleryModal = $gallery.find('.lw_gallery_modal');
+
+        // first, check the number of slides
+        const numSlides = $gallery.find('.lw_gallery_slide').length;
+
+        // remove the modal if there is only one slide
+        if ( numSlides < 2 ) {
+
+          $galleryModal.remove();
+          $gallery.addClass('lw_gallery--single');
+
+        } else { 
+
+          // if there are multiple slides, set up the fullscreen gallery
+        
+          // assign a random id for aria controls and JS functions
+          const id = Math.floor(1000 + Math.random() * 9000);
+
+          // add this id to the modal, move modal to the end of the body
+          $galleryModal.attr('id', `lw_modal_${id}`).appendTo($('body'));
+
+          // wrap the gallery with a link to open the modal
+          $gallery.addClass('lw_gallery--multiple')
+                  .wrapInner(`<a class="lw_gallery_open" href="#" role="button" title="Open gallery" aria-label="Open gallery" aria-controls="lw_modal_${id}">`);
+
+          // when the link is first clicked, call plugin to
+          // load the full-size images and open the modal
+          $gallery.find('.lw_gallery_open').one('click', function(e){
+            e.preventDefault();
+            $(this).lw_gallery_modal({
+              modal_id: id
+            });
+          });
         }
 
-        // Wait until first click to load the fullscreen gallery
-        $galleryPreview.one('click', function(e){
-          e.preventDefault();
-          $(this).lw_fsg({
-            gallery_id: $gallery.data('gallery-id'), 
-            width: $gallery.data('gallery-width')
-          });
-        });
-
         // Mark the gallery as initialized 
-        $gallery.attr('data-fsg-initialized', true);
+        $gallery.attr('data-gallery-initialized', true);
       }
     });
   }
