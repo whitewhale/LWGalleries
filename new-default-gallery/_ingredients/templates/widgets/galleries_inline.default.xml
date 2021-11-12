@@ -27,7 +27,6 @@
 				<div class="lw_gallery_thumb">
 
 					<!-- TO DO: Replace this <picture> with {gallery_thumb} -->
-					<p>(this image is just a placeholder until we have gallery_thumb)</p>
 					<picture class="lw_image lw_image6">	<source type="image/webp" srcset="/live/image/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.webp 1x, /live/image/scale/2x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.webp 2x, /live/image/scale/3x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.webp 3x">	<source type="image/jpeg" srcset="/live/image/scale/2x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.jpg 2x, /live/image/scale/3x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.jpg 3x">	<img src="/live/image/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.jpg" width="420" height="420" alt="" srcset="/live/image/scale/2x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.jpg 2x, /live/image/scale/3x/gid/2/width/420/height/420/crop/1/6_Frog.rev.1636483349.jpg 3x" data-max-w="3200" data-max-h="2125" loading="lazy"></picture>
 
 				</div>
