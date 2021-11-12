@@ -136,15 +136,15 @@ body.lw_gallery_open {
   &:not(.lw_gallery_open) {
     pointer-events: none; // prevent mouse events
     z-index: -9999; // place gallery behind everything
+    visibility: hidden;  // prevent kb/sr access
     opacity: 0;
-    // visibility: hidden;
   }
 
   &.lw_gallery_open { 
     pointer-events: all; // enable mouse events on gallery
     z-index: 9999;       // place gallery above everything
-    opacity: $background-opacity;  
     visibility: visible;   
+    opacity: $background-opacity;  
 
     * {
       visibility: visible !important; // override body.lw_gallery_open *
@@ -156,7 +156,9 @@ body.lw_gallery_open {
   }
 }
 
-// This element fades in once images are loaded
+// modal_inner fades in once images are loaded
+// anything that shows after the images are loaded goes inside modal_inner
+// the gallery_loader icon is outside modal_inner
 .lw_gallery_modal_inner {
   padding-top: 5vh; // change title position with padding
   opacity: 0;
@@ -192,12 +194,11 @@ body.lw_gallery_open {
 
 .lw_gallery_slides {
 	display: block;
-	list-style-type: none;
   margin: 0;
 	max-height: 80vh;
 }
 
-// Individual image container
+// Individual slides
 .lw_gallery_slide {
   display: block;
   position: absolute;
@@ -247,15 +248,15 @@ body.lw_gallery_open {
     }
   }
 
-  // Inactive images
+  // Inactive slides
   &:not(.lw_gallery_selected) {
     pointer-events: none;
-    visibility: hidden !important; // prevents kb/sr access
+    // visibility: hidden !important; // prevents kb/sr access
     opacity: 0;
     -webkit-transition: opacity 0.6s ease; // image fade out
     transition: opacity 0.6s ease;
 
-    * {
+    .lw_gallery_slide_caption {
       visibility: hidden !important; // prevents kb/sr access on caption links
     }
   }
@@ -318,7 +319,7 @@ body.lw_gallery_open {
 
 
 // Nav arrows
-.lw_gallery_nav_btn {
+.lw_gallery_arrow {
   z-index: 4; // above images
   position: absolute;
   display: block;
@@ -336,7 +337,7 @@ body.lw_gallery_open {
   cursor: pointer;
   text-indent: -9999px;
   outline: none;
-  transition: all .25s ease-in-out;
+  transition: all .2s ease-in-out;
 
   @media only screen and (max-width: 600px) {
     line-height: $btn-size-small;
@@ -350,7 +351,7 @@ body.lw_gallery_open {
   }
 
   &:hover,
-  &.is-keypress, {
+  &:focus-visible {
     background-color: $btn-bg-hover;
     border-color: $btn-hover-border-color;
     color: $btn-hover-color;

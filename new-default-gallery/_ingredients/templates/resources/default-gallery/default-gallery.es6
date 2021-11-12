@@ -22,27 +22,24 @@
       const self = this; 
       const $body = $('body');
 
-      // Add global variable for the id
+      // Add global variable for the modal id
       self.id = self.options.modal_id;
 
       // Store other variables for this function
-      const $thisModal = $(`#lw_modal_${self.id}`);
-      const $title = $thisModal.find('.lw_gallery_title');
-      const $slides = $thisModal.find('.lw_gallery_slide');
+      const $modal = $(`#lw_modal_${self.id}`);
+      const $title = $modal.find('.lw_gallery_title');
+      const $slides = $modal.find('.lw_gallery_slide');
       const $slideImages = $slides.find('.lw_gallery_slide_image');
       const $slideCaptions = $slides.find('.lw_gallery_slide_caption');
-      const $arrows = $thisModal.find('.lw_gallery_nav_btn');
-      const $arrowPrev = $arrows.filter('.prev');
-      const $arrowNext = $arrows.filter('.next');
+      const $arrows = $modal.find('.lw_gallery_arrow');
       let   $subSlide; 
 
       // For each slide
       $slides.each(function(i) {
         const $thisSlide = $(this);
 
-        // Add slide count to each aria-label
-        const alt = $thisSlide.attr('aria-label');
-        $thisSlide.attr('aria-label', `Slide ${i+1} of ${$slides.length}: ${alt}`);
+        // Add aria-label for slide count
+        $thisSlide.attr('aria-label', `Slide ${i+1} of ${$slides.length}`);
 
         // Load the full-size gallery image for each slide
         const $thisImage = $thisSlide.find('.lw_gallery_slide_image');
@@ -70,7 +67,7 @@
 
       // Close fullscreen modal when clicking outside the image, arrows and captions in the modal
       $body.on('click touchstart', function(e) {
-        if ( ( $thisModal.is(e.target) || $thisModal.has(e.target).length ) &&
+        if ( ( $modal.is(e.target) || $modal.has(e.target).length ) &&
              ( !$title.is(e.target) && $title.has(e.target).length === 0 ) &&
              ( !$slideImages.is(e.target) && $slideImages.has(e.target).length === 0 ) &&
              ( !$slideCaptions.is(e.target) && $slideCaptions.has(e.target).length === 0 ) &&
@@ -79,8 +76,8 @@
         }
       });
 
-      // Change slide on nav click
-      $body.on('click', `#lw_modal_${self.id} .lw_gallery_nav_btn`, function(e) {
+      // Change slide on arrow click
+      $body.on('click', `#lw_modal_${self.id} .lw_gallery_arrow`, function(e) {
         e.preventDefault();
         const $this = $(this);
 
@@ -95,8 +92,8 @@
         }
 
         // Replace selected slide with the substitute slide
-        $slides.removeClass('lw_gallery_selected').attr('aria-hidden', 'true');
-        $subSlide.addClass('lw_gallery_selected').attr('aria-hidden', 'false');
+        $slides.removeClass('lw_gallery_selected');
+        $subSlide.addClass('lw_gallery_selected');
         self._trigger( 'changeSlide' ); // Trigger event: changeSlide
 
         return true;
@@ -111,7 +108,7 @@
         if ( !$body.hasClass('lw_gallery_open') && !$(`#lw_modal_${self.id}`).hasClass('lw_gallery_open')) {
 
           // If space bar or return are pressed while focusing the trigger element, open this gallery
-          if( self.triggerEl.is(':focus') && ( keyCode == 13 || keyCode == 32 ) ) {
+          if( self.triggerEl.is(':focus') && ( keyCode === 13 || keyCode === 32 ) ) {
             e.preventDefault();
             self._open();
           }
@@ -121,38 +118,57 @@
         if ( $(`#lw_modal_${self.id}`).hasClass('lw_gallery_open') && $body.hasClass('lw_gallery_open') ) {
 
           // If escape key is pressed, close the fullscreen modal 
-          if(keyCode == 27) { 
+          if( keyCode === 27 ) { 
             self._close();
           }
 
           // If left or right arrows keys are pressed, change the image
-          if( keyCode == 37 || keyCode == 39 ) {
+          if( keyCode === 37 || keyCode === 39 ) {
 
-            if( keyCode == 37 ) { // left
+            if( keyCode === 37 ) { // left
               $subSlide = $slides.filter('.lw_gallery_selected').prev().length < 1 ? $slides.last() : $slides.filter('.lw_gallery_selected').prev();
+              $arrows.filter('.prev').focus(); 
               self._trigger( 'prevSlide' ); // Trigger event: prevSlide
-              $arrowPrev.addClass('is-keypress'); // Highlight arrow button
-              setTimeout(function(){
-                $arrowPrev.removeClass('is-keypress');
-              }, 500);
             }
-            else if( keyCode == 39 ) { // right
+            else if( keyCode === 39 ) { // right
               $subSlide = $slides.filter('.lw_gallery_selected').next().length < 1 ? $slides.first() : $slides.filter('.lw_gallery_selected').next();
+              $arrows.filter('.next').focus(); 
               self._trigger( 'nextSlide' ); // Trigger event: nextSlide
-              $arrowNext.addClass('is-keypress'); // Highlight arrow button
-              setTimeout(function(){
-                $arrowNext.removeClass('is-keypress');
-              }, 500);
             }
 
-            // Replace selected image with the substitute image
-            $slides.removeClass('lw_gallery_selected').attr('aria-hidden', 'true');
-            $subSlide.addClass('lw_gallery_selected').attr('aria-hidden', 'false');
+            // Replace selected slide with the substitute slide
+            $slides.removeClass('lw_gallery_selected');
+            $subSlide.addClass('lw_gallery_selected');
             self._trigger( 'changeSlide' ); // Trigger event: changeSlide
+          }
+
+          // If tab key is pressed, trap focus within the modal
+          if ( keyCode === 9 ) {
+
+            const $focusableFirst = $arrows.filter('.prev'); 
+            const $focusableLast = $modal.find('.lw_gallery_close'); 
+
+            if ( e.shiftKey ) { 
+
+              // Move focus to last focusable element 
+              // when shift+tabbing from first focusable element
+              if ( document.activeElement === $focusableFirst.get(0) ) {
+                e.preventDefault();
+                $focusableLast.focus();
+              }
+
+            } else {
+
+              // Move focus to first focusable element 
+              // when tabbing from last focusable element
+              if ( document.activeElement ===  $focusableLast.get(0) ) {
+                e.preventDefault();
+                $focusableFirst.focus();
+              }
+            }
           }
         }
       });
-
     },
 
 
@@ -178,25 +194,26 @@
 
         const $modal = $(`#lw_modal_${self.id}`);
         const $loader = $modal.find('.lw_gallery_loader');
+        const $slides = $modal.find('.lw_gallery_slide');
 
         // Add visiblity to the loader icon
         $loader.addClass('is-visible');
 
-        // Open the modal
-        $modal.addClass('lw_gallery_open').attr('aria-hidden', 'false').attr('tabindex','0').focus();
+        // Open the modal 
+        $modal.addClass('lw_gallery_open').attr('aria-hidden', 'false');
 
-        // If an image is passed, extract the image name 
+        // If an image is passed, make this the opening slide
         const imageName = ( $image && $image.length ) ? $image.attr('src').substr($image.attr('src').lastIndexOf('/') + 1) : false; 
+        const $selectedSlide = ( imageName && imageName.length ) ? $slides.find('img[src*="'+imageName+'"]').parent('.lw_gallery_slide') : $slides.first(); 
 
-        // Show this image, otherwise show the first image by default
-        const $slides = $modal.find('.lw_gallery_slide');
-        const $firstSlide = ( imageName && imageName.length ) ? $slides.find('img[src*="'+imageName+'"]').parent('.lw_gallery_slide') : $slides.first(); 
-
-        // Reveal gallery after the image displayed first has successfully loaded
-        $firstSlide.imagesLoaded().done(function() {
+        // Select this slide and open the gallery once the full-size image loads
+        $selectedSlide.addClass('lw_gallery_selected').imagesLoaded().done(function() {
+          $loader.removeClass('is-visible').attr('aria-hidden', 'true');
           $modal.find('.lw_gallery_modal_inner').addClass('is-visible');
-          $loader.removeClass('is-visible');
-        }).addClass('lw_gallery_selected').attr('aria-hidden', 'false');
+
+          // move focus to the first focusable element in the modal
+          $modal.find('.lw_gallery_arrow').filter('.prev').focus();
+        });
       }
 
       // Trigger event: open
@@ -219,10 +236,10 @@
       setTimeout(function(){
 
         // Fade the modal 
-        $modal.removeClass('lw_gallery_open').attr('aria-hidden', 'true').attr('tabindex','-1');
+        $modal.removeClass('lw_gallery_open').attr('aria-hidden', 'true');
 
         // Reset slide selection
-        $selectedSlide.removeClass('lw_gallery_selected').attr('aria-hidden', 'true');
+        $selectedSlide.removeClass('lw_gallery_selected');
 
         // Remove body class, allows other galleries to open
         $body.removeClass('lw_gallery_open');
@@ -277,12 +294,16 @@
           // assign a random id for aria controls and JS functions
           const id = Math.floor(1000 + Math.random() * 9000);
 
-          // add this id to the modal, move modal to the end of the body
-          $galleryModal.attr('id', `lw_modal_${id}`).appendTo($('body'));
+          // add this id to the modal, move modal to the end of <body>
+          $galleryModal.attr('id', `lw_modal_${id}`).attr('aria-labelledby', `lw_modal_title_${id}`).appendTo($('body'));
+
+          // assign title an id for aria-labelledby
+          const $title = $galleryModal.find('.lw_gallery_title');
+          $title.attr('id', `lw_modal_title_${id}`);
 
           // wrap the gallery with a link to open the modal
           $gallery.addClass('lw_gallery--multiple')
-                  .wrapInner(`<a class="lw_gallery_open" href="#" role="button" title="Open gallery" aria-label="Open gallery" aria-controls="lw_modal_${id}">`);
+                  .wrapInner(`<a class="lw_gallery_open" href="#" role="button" title="Open gallery: ${$title.text()}" aria-label="Open gallery: ${$title.text()}" aria-controls="lw_modal_${id}">`);
 
           // when the link is first clicked, call plugin to
           // load the full-size images and open the modal

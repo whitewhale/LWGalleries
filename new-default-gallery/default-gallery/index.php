@@ -28,7 +28,7 @@
             <arg id="id">1</arg>
           </widget> 
         </div>
-        <div style="flex: 0 1 320px;">
+        <div style="flex: 0 1 320px; max-width: 320px;">
           <h1>Sidebar/mobile size</h1>
           <widget type="galleries_inline">
             <arg id="id">2</arg>
