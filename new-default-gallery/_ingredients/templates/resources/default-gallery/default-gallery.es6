@@ -12,7 +12,7 @@
     // Options
     options: {
       modal_id: false,      // number, an id must be passed
-      destroyOnClose: false   // boolean, removes the gallery from the DOM on close
+      destroyOnClose: false   // boolean, removes the modal from the DOM on close
     },
 
     // Initialize the fullscreen gallery modal
@@ -51,7 +51,6 @@
           $thisImage.empty().append($(encodedHTML)); // decode the image
         }
       });
-
 
       // Open the fullscreen gallery 
       self._open();
@@ -177,8 +176,14 @@
         // Prevent scroll on body element while gallery is open
         $body.addClass('lw_gallery_open');
 
-        // Open the gallery
-        const $modal = $(`#lw_modal_${self.id}`).addClass('lw_gallery_open').attr('aria-hidden', 'false').attr('tabindex','0').focus();
+        const $modal = $(`#lw_modal_${self.id}`);
+        const $loader = $modal.find('.lw_gallery_loader');
+
+        // Add visiblity to the loader icon
+        $loader.addClass('is-visible');
+
+        // Open the modal
+        $modal.addClass('lw_gallery_open').attr('aria-hidden', 'false').attr('tabindex','0').focus();
 
         // If an image is passed, extract the image name 
         const imageName = ( $image && $image.length ) ? $image.attr('src').substr($image.attr('src').lastIndexOf('/') + 1) : false; 
@@ -190,7 +195,7 @@
         // Reveal gallery after the image displayed first has successfully loaded
         $firstSlide.imagesLoaded().done(function() {
           $modal.find('.lw_gallery_modal_inner').addClass('is-visible');
-          $modal.find('.lw_gallery_loader').removeClass('is-visible');
+          $loader.removeClass('is-visible');
         }).addClass('lw_gallery_selected').attr('aria-hidden', 'false');
       }
 

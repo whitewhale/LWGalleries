@@ -42,7 +42,7 @@
 				        </ul>
 				    </div>
 				    <button class="lw_gallery_close" title="Close gallery" aria-label="close gallery"></button>
-				    <div class="lw_gallery_loader is-visible">
+				    <div class="lw_gallery_loader">
 				        <div class="lw_gallery_loader_line"></div>
 				        <div class="lw_gallery_loader_line"></div>
 				        <div class="lw_gallery_loader_line"></div>
