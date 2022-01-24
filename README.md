@@ -1,7 +1,25 @@
-# LWGalleries
+# LWGalleries - Archived
+
+
+
+The LiveWhale inline gallery format has been updated.
+
+The relevant parts of this repository have been incorporated into LiveWhale core or LiveWhaleIngredients repository.
+
+
+
+
+===================================================================================================
+
+
+
+<br/><br/>
+
+### (No longer supported)
+
 A collection of galleries to use with LiveWhale CMS.
 
-## Installation
+#### Installation
 Add the galleries folder to your **global** theme:
 
     /www/_ingredients/themes/global/galleries/
