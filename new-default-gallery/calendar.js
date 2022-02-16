@@ -3417,9 +3417,8 @@ if (!Date.prototype.toISOString) {
         }
         this.show();
 
-        // load resourses for the event image gallery
-        // this runs whenever the event view is loaded
-        // include_javascript and include_stylesheet are in galleries_inline.default.xml
+        // load resources for the event image gallery as defined in galleries_inline.default.xml
+        // this runs whenever the event view is loaded and the event has images
 				$('.lw_gallery').each(function() {
           // load js if it's not already loaded
 					$('.lw_widget_resources_js').each(function() {
