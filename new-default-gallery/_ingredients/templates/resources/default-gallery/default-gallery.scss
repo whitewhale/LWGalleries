@@ -73,18 +73,18 @@ body.lw_gallery_open {
 }
 
 .lw_gallery {
-	display: block;
+  display: block;
 }
 
 // the selected thumbnail image is the only image loaded initially
 .lw_gallery_thumb {
-	position: relative;
-	display: block;
+  position: relative;
+  display: block;
   max-width: 100%;
-	width: 420px;
-	height: 420px;
-	background-size: cover;
-	background-position: center;
+  width: 420px;
+  height: 420px;
+  background-size: cover;
+  background-position: center;
 
   img {
     max-width: 100%; // ensure image fits within container
@@ -119,9 +119,10 @@ body.lw_gallery_open {
 }
 
 
-//  Fullscreen gallery modal, which is hidden initially
-//  full-size gallery images are loaded after the gallery is clicked
+//  Fullscreen gallery modal 
+//  full-size images are loaded when the modal first opens
 .lw_gallery_modal {
+  display: block !important; // loads with display: none to prevent FOUC
   overflow: scroll;
   position: fixed;
   top: 0;
@@ -193,9 +194,9 @@ body.lw_gallery_open {
 }
 
 .lw_gallery_slides {
-	display: block;
+  display: block;
   margin: 0;
-	max-height: 80vh;
+  max-height: 80vh;
 }
 
 // Individual slides
@@ -345,6 +346,10 @@ body.lw_gallery_open {
     height: $btn-size-small;
     width: $btn-size-small;
     border-radius: $btn-size-small;
+  }
+
+  &:focus { // remove default focus, replace with keyboard-only focus
+    outline: none;
   }
 
   &:focus-visible {

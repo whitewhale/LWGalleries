@@ -27,7 +27,7 @@
 				<div class="lw_gallery_thumb">
 					{gallery_thumbnail}
 				</div>
-				<div class="lw_gallery_modal" role="dialog" aria-modal="true" aria-hidden="true">
+				<div class="lw_gallery_modal" role="dialog" aria-modal="true" aria-hidden="true" style="display: none">
 			    <section class="lw_gallery_modal_inner" aria-roledescription="carousel">
 		        <h4 class="lw_gallery_title">{title}</h4>
 		        <!-- LW: the button order is important for focus trap -->

@@ -55,8 +55,9 @@
       // The trigger element is the jQuery object which called the plugin
       self.triggerEl = $(self.element);  
 
-      // Open the fullscreen modal when the trigger is clicked
+      // Open the fullscreen modal for subsequent clicks on the trigger element
       self.triggerEl.on('click', function(e){ 
+        e.preventDefault();
         self._open();
       });
 
@@ -261,10 +262,14 @@
 
 
 
-  // Function to initialize each lw_gallery 
+  // Function to initialize galleries
   function initLWGalleries() {
 
+    console.log('running initLWGalleries');
+
     $('.lw_gallery').each(function(){
+
+      console.log('there is a gallery');      
 
       const $gallery = $(this);
 
@@ -301,12 +306,12 @@
           const $title = $galleryModal.find('.lw_gallery_title');
           $title.attr('id', `lw_modal_title_${id}`);
 
-          // wrap the gallery with a link to open the modal
+          // wrap the inner gallery with a link to open the modal
           $gallery.addClass('lw_gallery--multiple')
                   .wrapInner(`<a class="lw_gallery_open" href="#" role="button" title="Open gallery: ${$title.text()}" aria-label="Open gallery: ${$title.text()}" aria-controls="lw_modal_${id}">`);
 
-          // when the link is first clicked, call plugin to
-          // load the full-size images and open the modal
+          // when this gallery link is first clicked
+          // call plugin to initialize the modal behavior and load full-size gallery images
           $gallery.find('.lw_gallery_open').one('click', function(e){
             e.preventDefault();
             $(this).lw_gallery_modal({
@@ -321,11 +326,25 @@
     });
   }
 
+  
   // Expose the gallery function globally
   livewhale.initLWGalleries = initLWGalleries;
 
-  // Call the function
+  
+  // Call the function when this file loads
+  // This runs whenever a gallery widget loads this file
+  // This runs when a calendar event view with a gallery is first loaded
   livewhale.initLWGalleries();
+
+
+  // Call the function for subsequent loads of the calendar event view
+  $('body').bind('calLoad.lwcal', function(e, controller, data) {
+    const view = controller.getView();
+    if ('event' === view) {
+      initLWGalleries();
+    }
+  });
+
 
 
 }(livewhale.jQuery));
