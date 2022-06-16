@@ -43,7 +43,7 @@
         var $gallery = $(this);
 
         // Once all images have loaded
-        $gallery.find('figure img').imagesLoaded().done(function(instance) {
+        $gallery.find('img').imagesLoaded().done(function(instance) {
 
           var autoplay = false,
               speed = 500;
